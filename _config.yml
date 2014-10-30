@@ -58,6 +58,7 @@ sass:
 
 # https://github.com/mojombo/jekyll/wiki/Permalinks
 permalink:   /:categories/:title
+baseurl: "blog"
 
 include: [".htaccess"]
 exclude: ["lib", "config.rb", "Capfile", "config", "log", "Rakefile", "Rakefile.rb", "tmp"]
