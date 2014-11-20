@@ -1,3 +1,10 @@
+---
+layout: post
+title: objective-c中的禅与艺术
+category: articles
+---
+
+
 iOS-blog [source page](http://ios-blog.co.uk/resources/free-pdf-zen-and-the-art-of-the-objective-c-craftsmanship/)
 
 #前言
