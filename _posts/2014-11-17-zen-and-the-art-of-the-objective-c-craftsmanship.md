@@ -262,8 +262,161 @@ switch (condition) {
 }
 ```
 
+有些时候同样的代码被多个case条件使用，这时应当使用fall-through。fall-through 是去除一条case的break语句进而允许进入到下个case的执行流程中。
+
+```
+switch (condition) {
+    case 1:
+    case 2:
+        // code executed for values 1 and 2
+        break;
+    default: 
+        // ...
+        break;
+}
+```
+
+当在switch中使用了枚举类型，就不需要`default`。例如
+
+```
+switch (menuType) {
+    case ZOCEnumNone:
+        // ...
+        break;
+    case ZOCEnumValue1:
+        // ...
+        break;
+    case ZOCEnumValue2:
+        // ...
+        break;
+}
+```
+
+而且，不适用default条件，当enum中新增加一个值时，程序员立即就会注意到相应的warning：
+`Enumeration value ‘ZOCEnumValue3′ not handled in switch.`
+
+#枚举类型
+
+使用enum时，推荐使用新的固定基础类型规范，因为这会带来更强的类型检查以及代码补全。现在的SDK包含了一个宏帮助鼓励使用固定基础类型-`NS_ENUM()`,例如
+
+```
+typedef NS_ENUM(NSUInteger, ZOCMachineState) {
+    ZOCMachineStateNone,
+    ZOCMachineStateIdle,
+    ZOCMachineStateRunning,
+    ZOCMachineStatePaused
+};
+```
 
 
+#命名
+
+##一般惯例
+
+Apple的命名惯例是任何地方都应当尽可能坚持的，尤其是于[内存管理规则](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html)相关的([NARC](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html))
+
+长的描述型式的方法变量名称是非常好的。
+
+优选的
+
+```
+UIButton *settingsButton;
+```
+
+不建议的
+
+```
+UIButton *setBut;
+```
+
+##常量
+
+常量应当遵循所有单词首字母大写的驼峰命名并且为了清晰起见以相关的类名字作为前缀。
+
+优选的
+
+```
+static const NSTimeInterval ZOCSignInViewControllerFadeOutAnimationDuration = 0.4;
+```
+
+不推荐的
+
+```
+static const NSTimeInterval fadeOutTime = 0.4;
+```
+
+常量是比直接写字符串或者数字更好的选择，因为这样使得通用变量重复使用变得容易，并且可以不用搜索查找快速改变。常量应当声明为`static`常量而不是`#define` 除非非常明确的作为宏使用。
+
+优选的
+
+```
+static NSString * const ZOCCacheControllerDidClearCacheNotification = @"ZOCCacheControllerDidClearCacheNotification";
+static const CGFloat ZOCImageThumbnailHeight = 50.0f;
+```
+
+不推荐的
+
+```
+#define CompanyName @"Apple Inc."
+#define magicNumber 42
+```
+
+外部使用的常量应当按照下面的样式在头文件中声明
+
+```
+extern NSString *const ZOCCacheControllerDidClearCacheNotification;
+```
+
+之前的被定义的赋值应当在实现文件中。
+
+你应当为公共的常量添加命名空间。虽然实现文件中使用的常量遵循另外一种模式，没有必要与上面的规则保持一致。
+
+##方法
+
+在方法签名中，在方法类型(`-`/`+`)后面应当有一个空格。方法片段间应当是一个空格。在参数之前总是有描述性的关键字来描述参数。
+
+"and"关键字被保留使用。不应当在多参数中使用，如下面`initWithWidth:height:`示例中展示的一样
+
+优选的
+
+```
+- (void)setExampleText:(NSString *)text image:(UIImage *)image;
+- (void)sendAction:(SEL)aSelector to:(id)anObject forAllCells:(BOOL)flag;
+- (id)viewWithTag:(NSInteger)tag;
+- (instancetype)initWithWidth:(CGFloat)width height:(CGFloat)height;
+```
+
+不推荐的
+
+```
+- (void)setT:(NSString *)text i:(UIImage *)image;
+- (void)sendAction:(SEL)aSelector :(id)anObject :(BOOL)flag;
+- (id)taggedView:(NSInteger)tag;
+- (instancetype)initWithWidth:(CGFloat)width andHeight:(CGFloat)height;
+- (instancetype)initWith:(int)width and:(int)height;  // Never do this.
+```
+
+##字面值
+
+在创建不可变对象实例时应当使用`NSString`,`NSDictionary`,`NSArray`和`NSNumber`字面值。特别注意传进`NSArray`，`NSDictionary`字面值中的`nil`值，那将引起崩溃。
+
+例如
+
+```
+NSArray *names = @[@"Brian", @"Matt", @"Chris", @"Alex", @"Steve", @"Paul"];
+NSDictionary *productManagers = @{@"iPhone" : @"Kate", @"iPad" : @"Kamal", @"Mobile Web" : @"Bill"};
+NSNumber *shouldUseLiterals = @YES;
+NSNumber *buildingZIPCode = @10018;
+```
+
+不要写成
+
+```
+NSArray *names = [NSArray arrayWithObjects:@"Brian", @"Matt", @"Chris", @"Alex", @"Steve", @"Paul", nil];
+NSDictionary *productManagers = [NSDictionary dictionaryWithObjectsAndKeys: @"Kate", @"iPhone", @"Kamal", @"iPad", @"Bill", @"Mobile Web", nil];
+NSNumber *shouldUseLiterals = [NSNumber numberWithBool:YES];
+NSNumber *buildingZIPCode = [NSNumber numberWithInteger:10018];
+```
 
 
 
