@@ -443,7 +443,109 @@ NSMutableArray *aMutableArray = [@[] mutableCopy];
 
 #初始化和销毁
 
-我们推荐的组织代码的方式是将`dealloc`放在implementation的最前面（直接在`@synthisize`和`@dynamic`之后）,`init`方法直接在`dealloc`之后。多个初始化方法的情况下，指定的初始化方法应当放在前面，因为在它里面可能有最复杂的逻辑，次级的初始化方法排在第二位。
+我们推荐的组织代码的方式是将`dealloc`放在implementation的最前面（直接在`@synthisize`和`@dynamic`之后）,`init`方法直接在`dealloc`之后。多个初始化方法的情况下，指定的初始化方法应当放在前面，因为在它里面可能有最复杂的逻辑，次级的初始化方法排在第二位。在使用ARC的情况下，很少实现dealloc方法，但是dealloc与init放在一块写仍然是基本原则，这样视觉上强调这两个方法这件的匹配。通常dealloc方法中取消的事情是在init中做的事情。
+
+`init`方法应当像下面这样组织
+
+```
+- (instancetype)init
+{
+    self = [super init]; // call the designated initializer
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+```
+
+理解为什么我们需要设置self值为`[super init]`的返回以及如果我们不这样做会有什么影响是非常有趣的。
+
+让我们做一下回溯：我们习惯于写像`[[NSObject alloc] init]`这样的表达式，导致`alloc`与`init`的区别被淡化了。这个objective-c的特性称之为两步创建。这意味着分配（allocation）和初始化(initialization)是分开的两步，因此两个不同的方法需要被调用:`alloc`和`init`。
+
+* `alloc` 负责对象的分配。这个过程涉及从程序的虚拟内存中分配足够的内从来保存对象，赋值`isa`指针，初始化retain count，将所有实例变量置为0.
+* `init` 负责初始化对象，这意味着使得对象变的可用。典型的意味着将实例变量设置为需要的可用的初始化值。
+
+`alloc`方法返回一个没有初始化的合法对象。每一个发送给这个对象的方法将被转到`objc_msgSend()`调用，此时`self`参数指向`alloc`返回的对象；这时在每个方法中`self`是隐式可用的。总结两步创建第一个发给新分配的对象惯例上应当是一个`init`方法。很明显，`NSObject`的`init`实现除了返回`self`没有做其他事情。
+
+`init`方法一个重要的约定是可以通过返回`nil`告知调用者初始化没有成功完成;初始化失败的原因很多，例如传进的一个错误的格式或者初始化一个需要的对象失败。
+
+这引导我们理解为什么我们总是调用`self=[super init]`。如果你的父类说明没有成功初始化自己，你最好假设你处在矛盾的状态下并且因此不应当进行你自己的初始化，相反你的实现应当返回`nil`。如果你没有这样做，你最终可能使用一个不可用的对象，这可能导致一些非预期的行为发生，设置导致你的程序崩溃。
+
+从新赋值`self`的能力可以被`init`方法用来返回一个与之前被调用对象（alloc）不同的对象。这种行为的例子是[类簇](http://ios-blog.co.uk/resources/free-pdf-zen-and-the-art-of-the-objective-c-craftsmanship/#class-cluster)或者一些对一些完全相等的对象返回同一个对象的cocoa类。
+
+#指定的和次级初始化
+
+objective-c中又指定与次级初始化的概念。指定的初始化包含全部初始化参数的初始化，次级初始化是一个或者多个调用指定初始化方法，指定一些默认参数值的初始化方法。
+
+```
+@implementation ZOCEvent
+
+- (instancetype)initWithTitle:(NSString *)title
+                         date:(NSDate *)date
+                     location:(CLLocation *)location
+{
+    self = [super init];
+    if (self) {
+        _title    = title;
+        _date     = date;
+        _location = location;
+    }
+    return self;
+}
+
+- (instancetype)initWithTitle:(NSString *)title
+                         date:(NSDate *)date
+{
+    return [self initWithTitle:title date:date location:nil];
+}
+
+- (instancetype)initWithTitle:(NSString *)title
+{
+    return [self initWithTitle:title date:[NSDate date] location:nil];
+}
+
+@end
+```
+
+上面的事例中`initWithTitle:date:location:`是指定初始化方法，其他的两个初始化是次级初始化，因为他们仅仅调用他们实现类中的指定初始化
+
+##指定初始化
+
+一个类中应当有一个且仅有一个指定初始化方法，其他的init方法应当调用指定初始化（即使这种情况可能有一些例外）。这个区别没有提应当调用哪个初始化方法。调用类集成树中的任何一个指定初始化方法都应当是合法的，并且所有的类继承树中的指定初始化方法应当从最远的祖先（典型的是`NSObject`）开始到你的类被调用是应当保障的。
+
+实践中，这样说的含义是第一个被执行初始化的代码是最远祖先的，然后沿着继承树向下，给继承树种所有类执行他们特殊初始化代码的机会。这所有的意味着你想要从父类继承下来的一切在做实际工作时是可用的。即使这没有明确列出，所有的苹果框架都是保证遵循这条约定，你的类应当同样遵循保证成为一个好"市民"并且表现如预期。
+
+在定义新类是可能出现三种不同情况：
+
+1. 不需要重写初始化
+2. 重写指定初始化
+3. 定义一个新的指定初始化
+
+第一个不需多说，我们不需要为初始化方法中添加任何特殊逻辑，你只需要依赖父类的指定初始化就好。
+
+当你想为初始化方法提供进一步的逻辑，你可以决定重写指定初始化。你仅仅应当重写直接父类的指定初始化方法并且确保调用super你所重写方法；
+
+一个典型的例子是创建`UIViewController`子类时是否重写`initWithNibName:bunlde`
+
+```
+@implementation ZOCViewController
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    // call to the superclass designated initializer
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+@end
+```
+
+
+在`UIViewController`子类的情况下，重写`init`方法是错误的
+
 
 
 
