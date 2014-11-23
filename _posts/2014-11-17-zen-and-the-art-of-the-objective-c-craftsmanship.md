@@ -311,7 +311,7 @@ typedef NS_ENUM(NSUInteger, ZOCMachineState) {
 
 #命名
 
-##一般惯例
+#一般惯例
 
 Apple的命名惯例是任何地方都应当尽可能坚持的，尤其是于[内存管理规则](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html)相关的([NARC](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html))
 
@@ -329,7 +329,7 @@ UIButton *settingsButton;
 UIButton *setBut;
 ```
 
-##常量
+#常量
 
 常量应当遵循所有单词首字母大写的驼峰命名并且为了清晰起见以相关的类名字作为前缀。
 
@@ -371,7 +371,7 @@ extern NSString *const ZOCCacheControllerDidClearCacheNotification;
 
 你应当为公共的常量添加命名空间。虽然实现文件中使用的常量遵循另外一种模式，没有必要与上面的规则保持一致。
 
-##方法
+#方法
 
 在方法签名中，在方法类型(`-`/`+`)后面应当有一个空格。方法片段间应当是一个空格。在参数之前总是有描述性的关键字来描述参数。
 
@@ -396,7 +396,7 @@ extern NSString *const ZOCCacheControllerDidClearCacheNotification;
 - (instancetype)initWith:(int)width and:(int)height;  // Never do this.
 ```
 
-##字面值
+#字面值
 
 在创建不可变对象实例时应当使用`NSString`,`NSDictionary`,`NSArray`和`NSNumber`字面值。特别注意传进`NSArray`，`NSDictionary`字面值中的`nil`值，那将引起崩溃。
 
@@ -418,9 +418,32 @@ NSNumber *shouldUseLiterals = [NSNumber numberWithBool:YES];
 NSNumber *buildingZIPCode = [NSNumber numberWithInteger:10018];
 ```
 
+对于可变的我们推荐是使用拷贝，而不要直接使用像`MSMutableArray`，`NSMutableString`等这样的类。
+
+下面的写法应当避免
+
+```
+NSMutableArray *aMutableArray = [@[] mutableCopy];
+```
+
+上面的写法存在性能以及可读性方面的问题。
+
+性能方面，不变对象被创建而后立刻释放，这种写法大概不会拖慢你的软件（除非频繁调用）但是仅仅为省下一些字符不算原因。
+
+关于可读性方面，这里有两个问题：第一个是扫过代码时看到`@[]`第一个想到的是不变的`NSArray`实例变量，但是在这，比必须停下，更加耐心的检查。另外需要重视的一面是你的代码可能被没有经验的人看到，基于他的背景，他可能对可变对象与不可变对象之间区分不熟。他可能不太明白为什么创建一个可变的拷贝（但是我们并不建议这些知识不应当被掌握）。再次，这虽然不是绝对的错误，但是关乎代码的可用性（包含可读性）。
 
 
+#类
 
+#类名
+
+你应当总是使你的类以*三个*大写字母为前缀（两个字母是苹果保留的）。这个看起来很怪的实践是缓和我们喜爱的语言命名空间缺失的缺陷。一些开发者在Model对象上并没有遵守这个实践（我们发现在coredata中尤为严重），我们建议在coredata 对象中也严格遵守这样的惯例，因为你可能最终需要合并其他的Managed object Model，也许来自第三方。就像你注意到的，这本书里类是一`ZOC`为前缀。
+
+还有一个在选择类名中好的实践你可能想要遵循：在创建新的类时，将新类特有的名字部分放在前缀与父类名字之间。这个用示例可以更好的解释：如果你有一个类名字`ZOCNetworkClient`，示例的子类名将是`ZOCTwitterNetworkClient`(注意"Twitter"在"ZOC"与“NetworkClient”之间)。或者遵循同样的规则，`UIViewController`的子类是`ZOCTimeLineViewController`。
+
+#初始化和销毁
+
+我们推荐的组织代码的方式是将`dealloc`放在implementation的最前面（直接在`@synthisize`和`@dynamic`之后）,`init`方法直接在`dealloc`之后。多个初始化方法的情况下，指定的初始化方法应当放在前面，因为在它里面可能有最复杂的逻辑，次级的初始化方法排在第二位。
 
 
 
