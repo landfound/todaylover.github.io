@@ -544,7 +544,61 @@ objective-c中又指定与次级初始化的概念。指定的初始化包含全
 ```
 
 
-在`UIViewController`子类的情况下，重写`init`方法是错误的
+在`UIViewController`子类的情况下，重写`init`方法是错误的，在调用者调用`initWithNib:bundle:`来初始化你的类时，你的实现将不被调用。这也违反了调用任何指定初始化都应当是合法的规则。
+
+在你自己提供自己的指定初始化方法时，你需要遵循以下三步来保证行为正确。
+
+1. 声明你的指定初始化方法，调用你的直接父类的指定初始化方法
+2. 重写你的直接父类的指定初始化方法，调用你自己新加的指定初始化方法
+3. 为新加的指定初始化方法添加文档
+
+很多开发者缺少后面两步，这不仅仅是一个小的谨慎点，在这两步的情况下而且是违背框架约定的，并且能导致非常诡异的行为以及错误。我们看一个正确实现这个的示例
+
+```
+@implementation ZOCNewsViewController
+
+- (id)initWithNews:(ZOCNews *)news
+{
+    // call to the immediate superclass's designated initializer
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        _news = news;
+    }
+    return self;
+}
+
+// Override the immediate superclass's designated initializer
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    // call the new designated initializer
+    return [self initWithNews:nil];
+}
+
+@end
+```
+
+在你不重写`initWithNibName:bundle:`时，调用者决定用这个方法来初始化你的类（者是一个完全合法的选项），`initWithNews:`方法永远不会被调用到，这将导致不正确的初始化序列，你的特殊的初始化逻辑没有被执行。
+
+即使推断是哪个方法是指定初始化方法是可能的，清晰明确的指出总是好的（将来你或者其他开发者会感谢你的）。有两个策略你可以使用（不是相互排斥的）：第一条是明确的在文档中列出哪个是指定初始化方法，但是更好的也对编译器更加友好的是使用编译器命令`__attribute__((objc_designated_initializer))`,借此你就可以表明你的用意。
+
+使用命令将使得编译器可以帮助你，并且实际上如果你的心得指定初始化方法中不调用父类的指定初始化方法，编译器会给出警告。
+
+有一些情况，不调用该类的指定初始化方法，而调用类树中的其他指定初始化方法将使得类不能工作。对照上面的例子来说，实例化一个应当展示新闻但不好喊news的`ZOCNewsViewController`对象是没有意义的。在这种情况下，你可以强迫必须调用特别的指定初始化方法，简单的使其他指定初始化方法不可用。这可以通过另外一个编译器指令`__attribute__((unavailable(“Invoke the designated initializer”)))`来实现，用该指令装饰一个方法会导致如果你调用这个方法编译器会产生一条错误。
+
+这是上面示例的相关实现（注意宏的实现避免代码的重复以及减少繁琐）
+
+```
+@interface ZOCNewsViewController : UIViewController
+
+- (instancetype)initWithNews:(ZOCNews *)news ZOC_DESIGNATED_INITIALIZER;
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil ZOC_UNAVAILABLE_INSTEAD(initWithNews:);
+- (instancetype)init ZOC_UNAVAILABLE_INSTEAD(initWithNews:);
+
+@end
+```
+
+
+
 
 
 
