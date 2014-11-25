@@ -687,8 +687,46 @@ objective-c中又指定与次级初始化的概念。指定的初始化包含全
 }
 @end
 ```
+上面的示例展示了怎么创建类簇。首先`[self isMemberOfClass:ZOCKintsugiPhotoViewController.class]`被用来阻止在子类中重写init方法的必要性，为了阻止无限循环。当`[[ZOCKintsugiPhotoViewController alloc] initWithPhotos:photos]`被调用时，前面的检查逻辑为真，`self = nil`用来去除对`ZOCKintsugiPhotoViewController`实例对象的引用，改对象将被销毁，后面的是选择哪个子类应当被初始化的逻辑。
 
+我们假定在iPhone上运行代码，并且`ZOCKintsugiPhotoViewController_iPhone`没有重写`initWithPhotos`,在这种情况下，当执行`self = [[ZOCKintsugiPhotoViewController_iPhone alloc] initWithPhotos:photos];`时，`ZOCKintsugiPhotoViewController`将被调用，这块，在第一步检查时，对象不是`ZOCKintsugiPhotoViewController`,检查返回失败，然后调用`return [super initWithNibName:nil bundle:nil];`,这使得整个初始化沿着之前章节强调的正确初始化路径进行。
 
+##单例
+
+通常尽可能避免使用单例，而是使用依赖注入。不过，不可避免的单例对象应当使用线程安全的创建共享对象的模式。自GCD起,可以使用`dispatch_once()`来达到目的
+
+```
++ (instancetype)sharedInstance
+{
+   static id sharedInstance = nil;
+   static dispatch_once_t onceToken = 0;
+   dispatch_once(&onceToken, ^{
+      sharedInstance = [[self alloc] init];
+   });
+   return sharedInstance;
+}
+```
+
+dispatch_once()的使用是同步的，替代了底下废弃的惯用方法：
+
+```
++ (instancetype)sharedInstance
+{
+    static id sharedInstance;
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            sharedInstance = [[MyClass alloc] init];
+        }
+    }
+    return sharedInstance;
+}
+```
+
+`dispatch_once()`相比上面的好处是比较快，语义上更加清晰，因为`dispatch_once()`所有的含义是“执行某件事情一次，而且仅一次”,这正精确描述了我们正在做的。这个方法也避免[偶尔可能的奇奇怪怪的崩溃](http://cocoasamurai.blogspot.com/2011/04/singletons-your-doing-them-wrong.html)
+
+经典的可接受的单例对象是GPS和设备加速器。即使单例对象可以子类化，这样使用的也是非常稀少的。接口中应当明显标示这个类将被用作单例。因此，通常一个公开的`sharedInstance`就够了，没有可写的属性被暴露。
+
+尝试使用单例作为对象的容器在你的程序代码中或层次中是非常丑陋，令人不爽的，应当被视为设计“臭味”。
 
 
 
