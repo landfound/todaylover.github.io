@@ -597,6 +597,103 @@ objective-c中又指定与次级初始化的概念。指定的初始化包含全
 @end
 ```
 
+上面描述的东西的结论是你应当永远不要在指定初始化方法中调用次级初始化方法（如果次级初始化方法遵循原则，它将调用指定初始化方法）。如果这么做了，调用非常可能触发子类中重写的init方法进而导致无限调用循环。
+
+然而对于前面列出的规则有一个例外是一个对象是否遵循`NSCoding`协议并且通过`initWithCoder:`方法来初始化。
+
+你应当区分父类什么时候遵循`NSCoding`什么时候不遵循。
+
+在之前的实例中，如果你仅仅调用`[super initWithCoder:]`,你讲可能和指定初始化方法有一些共同的初始化代码。有个好的处理这种情况的方法是将这些代码提取到一个私有方法(例如：`p_commonInit`)
+
+当你的父类不遵循`NSCoding`协议时，推荐的做法是将`initWithCoder:`按照次级初始化方法来对待，因此调用`self`的指定初始化方法。注意这个是于苹果在[归档和序列化程序指南](https://developer.apple.com/library/mac/documentation/cocoa/Conceptual/Archiving/Articles/codingobjects.html#//apple_ref/doc/uid/20000948-BCIHBJDE)中列出的相违背的。
+
+> 对象应当首先调用其父类的指定初始化方法来初始化继承的状态
+
+遵循这个实际上将导致如果你的类是或不是`NSObject`的子类将会有不确定的行为。
+
+##次级初始化
+
+如上面段落列出的，次级初始化方法是一组比较方便的为指定初始化方法提供默认值或者行为的的方法。这就是说，你不应当在这些方法中做强制的初始化并且从来不应假定这个方法将被调用看起来很清晰。唯一的我们保证被调用的是指定初始化方法。
+
+这意味这在次级初始化方法中你应当总是调用其他的次级初始化方法或者`self`指定初始化方法。有时，由于错误，有人可能会写成`super`；如果这样做将引起前面的初始化序列没有被遵守（在这的特定情况是跳过当前类的初始化）。
+
+参考：
+
+1. [https://developer.apple.com/library/ios/Documentation/General/Conceptual/DevPedia-CocoaCore/ObjectCreation.html](https://developer.apple.com/library/ios/Documentation/General/Conceptual/DevPedia-CocoaCore/ObjectCreation.html)
+2. [https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/Initialization/Initialization.html](https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/Initialization/Initialization.html)
+3. [https://developer.apple.com/library/ios/Documentation/General/Conceptual/DevPedia-CocoaCore/MultipleInitializers.html](https://developer.apple.com/library/ios/Documentation/General/Conceptual/DevPedia-CocoaCore/MultipleInitializers.html)
+4. [https://blog.twitter.com/2014/how-to-objective-c-initializer-patterns](https://blog.twitter.com/2014/how-to-objective-c-initializer-patterns)
+
+#instancetype
+
+有人可能经常没有发现Cocoa中充满了惯例，并且这些惯例使得编译器更加智能。编译器知道是否遇到`alloc`或者`init`方法，即使两个方法返回的类型是`id`，这些方法将返回被调用类的类型的实例对象。因此，这允许编译器进行强制类型检查（例如：检查被调用方法的返回值是合法的）。Clang这种贴心的功能源于被称作[相关结果类型](http://clang.llvm.org/docs/LanguageExtensions.html#related-result-types),具体含义如下：
+
+> 发送alloc和inits等的消息与接收类的实例对象的消息有相同的静态类型
+
+想要了解更多允许自动识别相关结果类型的惯例，请参考Clang语言扩展指南的相关章节。
+
+相关结果类型可以用`instancetype`作为返回结果类型明确列出，并且在工厂方法或者便利构造器被使用的情况下是非常有用的。这可以提示编译器进行正确的类型检查，尤为重要的是，当进行子类化的时候依然可以表现正确。
+
+```
+@interface ZOCPerson
++ (instancetype)personWithName:(NSString *)name;
+@end
+```
+
+虽然，根据clang的说明，`id`可以被编译器升为`instancetype`。在`alloc`或者`init`的情况下，我们强烈鼓励对所有返回类实例对象的类和实例方法使用`instancetype`返回值。
+
+这主要是在所有API中形成习惯以及保持一致（也许有一个更易读的接口）。再次，对代码进行小小的调整就可以提高可读性:简单瞥一眼就能知道哪些方法返回实例对象。长远来看，你将感激这些细节的归类。
+
+参考：
+1. [http://tewha.net/2013/02/why-you-should-use-instancetype-instead-of-id](http://tewha.net/2013/02/why-you-should-use-instancetype-instead-of-id/)
+2. [http://tewha.net/2013/01/when-is-id-promoted-to-instancetype/](http://tewha.net/2013/01/when-is-id-promoted-to-instancetype/)
+3. [http://clang.llvm.org/docs/LanguageExtensions.html#related-result-types](http://clang.llvm.org/docs/LanguageExtensions.html#related-result-types)
+4. [http://nshipster.com/instancetype/](http://nshipster.com/instancetype/)
+
+#初始化模式
+
+##类簇
+
+苹果文档中类簇的描述如下：
+
+> 一种将许多私有的，具体的类归类在一个共有的，抽象的父类之下的结构
+
+如果这个描述听起来很熟悉，那么可能你的直觉是正确的。类簇是苹果对[抽象工厂](http://en.wikipedia.org/wiki/Abstract_factory_pattern)设计模式的术语。类簇的想法非常简单：你通常有一个抽象类，该类在初始化过程中使用一些作为初始化方法参数的信息，或者环境中可得到的信息来完成一个逻辑并且实例化一个具体的子类。这个“公共接口”的类内部应当对其子类有很好的了解，以便能够对任务来说最恰当的私有子类。这个模式非常有用，因为它对于调用者去除了初始化逻辑中的复杂性，调用者仅仅知道相互通信的接口，并且也不关心下面的具体实现。
+
+类簇在苹果的框架中广泛使用；最瞩目的例子是`NSNumber`，它可以根据提供数字的类型（integer，float等）返回恰当的子类；或者是`NSArray`， 它根据最优的存储策略返回具体的子类。
+
+
+这个模式的美好之处在于调用者完全不知道具体子类；实际上，这可以在设计库时使用，只要遵循抽象类中建立的约定，就能交换底层返回类而不暴露任何实现细节。
+
+以我们的经验，类簇在去除条件代码上非常有帮助。一个典型的例子是当你在iPhone和iPad有相同的UIViewController的子类，但是在设备上行为有些轻微的却别。比较天真的实现是在需要不同逻辑方法中放置一些检查设备的代码，即使开始时，应用的条件逻辑非常少，但是他们会自然增长进而产生爆炸式的代码路径。更好的设计可以通过创建一个抽象通用的view controller，该类中包含所有共享的逻辑，然后两个每种设备特殊的子类来达到。
+
+通用的view controller 将检查现在的设备类型，并根据该值返回恰当的子类。
+
+```
+@implementation ZOCKintsugiPhotoViewController
+- (id)initWithPhotos:(NSArray *)photos
+{
+    if ([self isMemberOfClass:ZOCKintsugiPhotoViewController.class]) {
+        self = nil;
+        if ([UIDevice isPad]) {
+            self = [[ZOCKintsugiPhotoViewController_iPad alloc] initWithPhotos:photos];
+        }
+        else {
+            self = [[ZOCKintsugiPhotoViewController_iPhone alloc] initWithPhotos:photos];
+        }
+        return self;
+    }
+    return [super initWithNibName:nil bundle:nil];
+}
+@end
+```
+
+
+
+
+
+
+
 
 
 
