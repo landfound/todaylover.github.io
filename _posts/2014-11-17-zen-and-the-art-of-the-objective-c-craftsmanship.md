@@ -726,7 +726,141 @@ dispatch_once()的使用是同步的，替代了底下废弃的惯用方法：
 
 经典的可接受的单例对象是GPS和设备加速器。即使单例对象可以子类化，这样使用的也是非常稀少的。接口中应当明显标示这个类将被用作单例。因此，通常一个公开的`sharedInstance`就够了，没有可写的属性被暴露。
 
-尝试使用单例作为对象的容器在你的程序代码中或层次中是非常丑陋，令人不爽的，应当被视为设计“臭味”。
+尝试使用单例作为对象的容器在你的程序代码中或层次中共享是非常丑陋，令人不爽的，应当被视为设计“臭味”。
+
+#属性
+
+属性应当被命名为尽可能描述性的，避免所写，驼峰结构，开头字母小写。非常幸运，我们选择的工具几乎能补全我们输入的任何东西（看看 Xcode’s Derived Data）,所以，没有原因省下那么点字符，并且，在你的源码中传达尽可能多的信息是更好的。
+
+例如
+
+`NSString *text;`
+
+不要写成
+
+```
+NSString* text;
+NSString * text;
+```
+（注解：这种优劣选择对于常量来说是不同的。实际上，这大约是共有的观念以及可读性方面的东西：C++ 开发者更偏向于江变量名与类型分开，这里的话，由于纯粹格式的类型是NSString*（对于分配在堆上的对象，在C++中可能分配在栈上），将使用`NSString* text`）
+
+使用自动生成属性而不是手动用`@synthesize`语句，除非你的属性是协议而不是具体类的一部分。如果XCode能够生成变量，就用它的；此外，这是多余的一部分代码，然而你却必须维护它。
+
+除了在`init`和`dealloc`中，你总是应该使用 getter 和 setter 来获取属性。一般而言，使用属性，你能在视觉上有一些线索，你正在获取的对象是在你的当前作用域之外，因此受副作用影响。
+
+你影响总是选择 setter,原因如下：
+
+* 使用 setter 将遵循预定义的内存管理语法（`strong`,`weak`,`copy`等）。这些定义在ARC 之前是更加相关的，但现在仍相关；想一下这个例子: `copy`语法，每次你使用setter，不用其他任何操作传递的值被拷贝一份。
+* KVO 通知将自动触发（`willChangeValueForKey`和`didChangeValueForKey`）
+* 更容易调试，你可以在属性声明处设置断点，该断点每次在调用getter，setter时会被触发。或者你可以在自定义的getter/setter里面设置断点。
+* 允许在设置值时单一处添加额外的逻辑
+
+你应当总是用 getter
+
+* 对于将来的修改更有弹性(例如：属性是动态生成的)
+* 允许子类化
+* 容易debug（例如，可以在getter中设置断点来看谁在获取检测的getter）
+* 使得意图更加明显：获取ivar `_anIvar`实际上你是在获取`self->_anIvar`。在block内部获取iVar时这可能会导致问题（你讲捕获并保留sef，虽然你没有明确的看到`self`关键字）
+* 自动触发KVO通知
+* 消息发送带来的效率耗费是非常少的，大多数情况下是可以忽略的。关于属性性能的更多信息你可以找到一个有趣的性能刚要[我应当使用属性还是实例变量](http://blog.bignerdranch.com/4005-should-i-use-a-property-or-an-instance-variable/)
+
+
+## init和Dealloc
+
+这儿以一个礼物外需要提前列出：你永远不要再init中使用getter或者setter（其他init方法也是如此），替代的你应当总是直接通过实例变量获取变量。这是对子类化的一些防范措施：最终子类可以重写getter或者setter方法，并可能调用其他方法，其他方法中获取的属性或者iVars可能是不确定状态的或者没有全部初始化的。记住一个对象在init返回后才被认为是完全初始化。这些同样在`dealloc`中适用（在`dealloc`中，对象可能在不确定状态）。这之前也被清楚的列出过好多次：
+
+* [高级内存管理指南](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW6)在self解释说明章节"不要使用在初始化或者销毁时获取方法"
+* [迁移到现代objective-c](http://adcdownload.apple.com//wwdc_2012/wwdc_2012_session_pdfs/session_413__migrating_to_modern_objectivec.pdf) WWDC 2012 27幻灯片
+* Dave 的 [合并请求](https://github.com/NYTimes/objective-c-style-guide/issues/6)
+
+而且，在init中使用init对于`UIAppearence`代理来说不友好。（请参考[自定义视图使用UIAppearence](http://petersteinberger.com/blog/2013/uiappearance-for-custom-views/)）
+
+### 点符号
+
+使用setter/getter时，经常选用点符号。获取改变属性时应当总是使用点符号。
+
+例如：
+
+```
+view.backgroundColor = [UIColor orangeColor];
+[UIApplication sharedApplication].delegate;
+```
+
+不要如下
+
+```
+[view setBackgroundColor:[UIColor orangeColor]];
+UIApplication.sharedApplication.delegate;
+```
+
+使用点符号将有助于视觉上区分属性以及典型的方法调用。
+
+
+## 属性声明
+
+更好的声明属性的格式如下：
+
+```
+@property (nonatomic, readwrite, copy) NSString *name;
+```
+
+属性的属性应当按照以下顺序排列:原子化, 读写和内存管理存储。这么做的话，你的属性更可能在正确位置更改并且容易用眼睛扫描。
+
+除非你有严格的必要性，你一定要使用`nonatomic`属性。在iOS上，`atomic`引入的锁会显著的影响性能。
+
+存储block的属性，为了在声明作用域结束后依然使block存活，必须使用`must`。（block初始时在栈上创建，调用copy使得block被拷贝到堆上）.
+
+为了得到一个共有的getter以及私有的setter，你可以用`readonly`声明共有属性，然后再类的扩展中重新用`readwrite`声明同样的属性:
+
+```
+@interface MyClass : NSObject
+@property (nonatomic, readonly) NSObject *object
+@end
+
+@implementation MyClass ()
+@property (nonatomic, readwrite, strong) NSObject *object
+@end
+
+```
+
+如果`BOOL`类型的属性名字被表述为形容词，该属性可以省略'is'前缀，对get存取方法特别指出惯例名字，例如：
+
+```
+@property (assign, getter=isEditable) BOOL editable;
+```
+
+示例摘自[cocoa命名指南](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CodingGuidelines/Articles/NamingIvarsAndTypes.html#//apple_ref/doc/uid/20001284-BAJGIIJE)
+
+在实现文件中避免使用`@synthesize`,XCode已经添加了这个。
+
+###私有属性
+
+私有属性应当在类的实现文件的类扩展中（匿名分类）声明。 命名分类（`ZOCPrivate`）除了扩展其他类之外不要使用.
+
+例如：
+
+```
+@interface ZOCViewController ()
+@property (nonatomic, strong) UIView *bannerView;
+@end
+```
+
+##可变对象
+
+审核可以被设置为可变对象（`NSString`，`NSArray`,`NSURL`）的属性必须设置内存管理类型为`copy`。这样做是为了确保封装性，阻止在设置了属性之后该属性变化但是对象不知道的情况。
+
+你应当避免在公共接口中暴露可变对象，这允许你的类的使用者改变你自己的内部变现以及打破封装性。。你这一提供一个使用只读来返回你对象的不可变拷贝
+
+```
+/* .h */
+@property (nonatomic, readonly) NSArray *elements
+
+/* .m */
+- (NSArray *)elements {
+  return [self.mutableElements copy];
+}
+```
+##延迟加载
 
 
 
