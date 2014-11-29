@@ -862,6 +862,71 @@ UIApplication.sharedApplication.delegate;
 ```
 ##延迟加载
 
+有些情况如当初始化一个对象很昂贵或者需要配置一次，其中有些配置你不想在调用者的方法中实现。
+
+这种情况下，有人相比于在init方法中创建对象会选择重写属性getter方法以便延迟加载。通常这种操作的模板如下：
+
+```
+- (NSDateFormatter *)dateFormatter {
+  if (!_dateFormatter) {
+    _dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormatter setLocale:enUSPOSIXLocale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSS"];
+  }
+  return _dateFormatter;
+}
+```
+
+即使这种操作在某些环境中是有益的但是我们建议当这么做时仔细思量，并且实际上这样的行为应当避免。下面的是反对在属性getter方法使用延迟加载的理由：
+
+* getter方法不应当有副作用。看到赋值右边你不会想到这会引起创建一个对象或者导致副作用。实际上，在不使用getter返回值时调用getter编译器会产生警告“getter不应当用来触发副作用”
+* 你把初始化时的消耗作为副作用移到了第一次获取里，这导致很难优化性能问题（这也是非常难用工具进行的）
+* 初始化的时机不确定：例如你期望这个属性在一个方法中第一个被获取，但是你一旦改变了类的实现，访问器在你原来期望之前被调用。这可能会导致问题，尤其是在初始化逻辑依赖类中其他可能不同的状态时。通常明确表明这种依赖是更好的做法。
+* 这种行为可能不是KVO友好的。如果getter方法改变了对象指向，他应当触发KVO通知来通知该变化，在调用一个getter方法时受到变化通知是非常诡异的。
+
+#方法
+
+##参数断言
+
+你的方法可能需要一些满足一些条件的参数（如不能是nil）：在这些情况下，断言条件并且甚至抛出异常是好的实践。
+
+##私有方法
+
+永远不要给私有方法中添加单个下划线`_`，这个前缀被苹果保留，如果这么做了，你可能冒着覆盖已经存在的苹果的私有方法的分享。
+
+##相等
+
+
+你需要实现相等时请记住约定：你需要同时实现`isEqual`和`hash`两个方法。如果两个对象对于`isEqual`被认为是相等的，那么`hash`方法必须返回相等的值，但是如果`hash`返回相等的值，对象不一定保证相等。
+
+这个约定归结为存储在收集器中的对象怎么做查找（即：`NSDictionary`和`NSSet`底层使用hash表数据结构）
+
+```
+@implementation ZOCPerson
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+
+    if (![object isKindOfClass:[ZOCPerson class]]) {
+        return NO;
+    }
+
+    // check objects properties (name and birthday) for equality
+    ...
+    return propertiesMatch;
+}
+
+- (NSUInteger)hash {
+    return [self.name hash] ^ [self.birthday hash];
+}
+
+@end
+```
+
+需要注意的是hash方法不可以返回常量。这是典型的错误，并且会引起错误，这将一起hash表中100%的冲突，由于hash表中使用hash方法返回的值作为关键字。
 
 
 
