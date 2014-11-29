@@ -928,9 +928,221 @@ UIApplication.sharedApplication.delegate;
 
 需要注意的是hash方法不可以返回常量。这是典型的错误，并且会引起错误，这将一起hash表中100%的冲突，由于hash表中使用hash方法返回的值作为关键字。
 
+你也应当实现一个类型相等的检查方法，依照下面的格式`isEqualTo<#class-name-without-prefix#>`:如果可能，避免调用调性检查直接调用类型相等方法是更好的选择。
+
+一个完整的isEual*方法的模式应当如下：
+
+```
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+      return YES;
+    }
+
+    if (![object isKindOfClass:[ZOCPerson class]]) {
+      return NO;
+    }
+
+    return [self isEqualToPerson:(ZOCPerson *)object];
+}
+
+- (BOOL)isEqualToPerson:(Person *)person {
+    if (!person) {
+        return NO;
+    }
+
+    BOOL namesMatch = (!self.name && !person.name) ||
+                       [self.name isEqualToString:person.name];
+    BOOL birthdaysMatch = (!self.birthday && !person.birthday) ||
+                           [self.birthday isEqualToDate:person.birthday];
+
+  return haveEqualNames && haveEqualBirthdays;
+}
+```
+
+给定对象实例，`hash`的计算应当是确定的，这在对象被加进容器中（`NSArray`,`NSSet`,`NSDictionary`）时是尤其重要的，否则行为是没法定义的（所有容器对象使用对象hash来查找，并且强迫包含特定的属性如对象特征）。这就是说，hash的计算总是由不变的属性来计算或者更好的是保证对象的不变性。
+
+#分类
+
+我们知道这是非常丑陋的，但是分类应当以你自己的小写前缀以及一个下划线为前缀，例如`- (id)zoc_myCategoryMethod`。 这个实践也是[苹果推荐](https://developer.apple.com/library/ios/documentation/cocoa/conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html#//apple_ref/doc/uid/TP40011210-CH6-SW4)的。
+
+这样做是绝对必要的，因为实现一个存在于其他扩展对象或分类中的名字的方法，会导致不确定的行为。实践来说，最后一个家在的分类的方法是被调用的方法。
+
+如果你想确定你没有用你的分类替换已有的实现，你可以设置环境变量`OBJC_PRINT_REPLACED_METHODS`为`YES`，这样做将在控制台打印出被替换的方法的名字。写代码时，LLVM5.1 不会对此提示任何警告或者错误，所有仔细一点不要覆盖了分类中的方法。
+
+好的实践是分类名称前面使用前缀。
+
+例如：
+
+```
+@interface NSDate (ZOCTimeExtensions)
+- (NSString *)zoc_timeAgoShort;
+@end
+```
+
+不要写成
+
+```
+@interface NSDate (ZOCTimeExtensions)
+- (NSString *)timeAgoShort;
+@end
+```
+
+分类可以用来在头文件中将相关的方法分组。这在苹果的框架中是常见的实践。（最近被提议的是`NSdate`头文件的抽取）。我们强烈鼓励在你的代码中也这么做。
+
+在我们的实践中，创建分组对于将来重构有好处：在类或者声明开始增长时，这是一个信号，你的类做了太多的事情，因此违背了单一职责原则，之前创建的分组可以用来更好的理解不同的责任，并且在更多的自包含组件下分拆类有所帮助。
+
+```
+@interface NSDate : NSObject <NSCopying, NSSecureCoding>
+
+@property (readonly) NSTimeInterval timeIntervalSinceReferenceDate;
+
+@end
+
+@interface NSDate (NSDateCreation)
+
++ (instancetype)date;
++ (instancetype)dateWithTimeIntervalSinceNow:(NSTimeInterval)secs;
++ (instancetype)dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)ti;
++ (instancetype)dateWithTimeIntervalSince1970:(NSTimeInterval)secs;
++ (instancetype)dateWithTimeInterval:(NSTimeInterval)secsToBeAdded sinceDate:(NSDate *)date;
+// ...
+@end
+```
+
+#协议
+
+objective-c中最大的缺失是最近十年出来的抽象接口相关的东西。术语“接口"典型的是指类的`.h`文件，对应的，对于java程序员来说，它有一个广为人知的含义，即主要的用来描述一组不依赖具体实现的方法。
+
+在objective-c中后一种情况用协议来实现。由于历史原因，通常而言协议（java中使用的接口）没有在objective-c的代码中被社区广泛的应用，主要的原因是大量的苹果开发的代码没有拥抱这个趋势，几乎所有的开发者都倾向于跟随苹果的模式以及指导方针。苹果几乎仅仅在委托模式时使用协议。抽象接口的概念是非常有力的，根植于计算机科学历史，没有理由假装它在objecive-c中使用不了。
+
+接下来将通过具体的例子展示一个非常有效的协议的使用：从一个非常坏的设置结构开始，一直到达一个非常好并且可充用的代码片段。
+
+展示的示例是一个RSS 订阅器的实现（想想这是一个技术面试中被问通用的测试任务）。
+
+要求非常直接，在table view中展示一个远程的RSS订阅器。
+
+一个非常简单的实现是创建一个`UITableViewController`的子类，并且写全部的用来检索订阅数据的逻辑代码，解析与展示在同一个地方，换句话说，一个MVC（臃肿的View Controller）。这能够工作，但是是个非常坏的设计，并且非常不幸，这在一些不那么要求的的科技创业的面试中通过。
+
+微小的进步是遵循单一职责原则，并且穿件最少两个组块来做不同的任务：
+
+* 一个订阅分析起来分析从一个源收集的数据
+* 一个订阅读取器来展示结果
+
+这些类的借口可能像这样：
+
+```
+@interface ZOCFeedParser : NSObject
+
+@property (nonatomic, weak) id <ZOCFeedParserDelegate> delegate;
+@property (nonatomic, strong) NSURL *url;
+
+- (id)initWithURL:(NSURL *)url;
+
+- (BOOL)start;
+- (void)stop;
+
+@end
+```
+
+```
+@interface ZOCTableViewController : UITableViewController
+
+- (instancetype)initWithFeedParser:(ZOCFeedParser *)feedParser;
+
+@end
+```
+
+`ZOCFeeedParser`用一个指向一个源的`NSURL`初始化来拉取RSS订阅（详细的可能使用NSXMLParse和NSXMLParseDelegate创建有意义的数据），并且`ZOCTableViewController`用一个解析器来初始化。 我们想要它展示解析器检索出来的结果，我们用下面协议的委托来做这件事：
+
+```
+@protocol ZOCFeedParserDelegate <NSObject>
+@optional
+- (void)feedParserDidStart:(ZOCFeedParser *)parser;
+- (void)feedParser:(ZOCFeedParser *)parser didParseFeedInfo:(ZOCFeedInfoDTO *)info;
+- (void)feedParser:(ZOCFeedParser *)parser didParseFeedItem:(ZOCFeedItemDTO *)item;
+- (void)feedParserDidFinish:(ZOCFeedParser *)parser;
+- (void)feedParser:(ZOCFeedParser *)parser didFailWithError:(NSError *)error;
+@end
+```
+
+我要说这是一个完美的合理合适的处理RSS的协议。view controller在公共借口里遵循该协议。
+
+```
+@interface ZOCTableViewController : UITableViewController <ZOCFeedParserDelegate>
+```
+
+最终的创建的代码像这样：
+
+```
+NSURL *feedURL = [NSURL URLWithString:@"http://bbc.co.uk/feed.rss"];
+
+ZOCFeedParser *feedParser = [[ZOCFeedParser alloc] initWithURL:feedURL];
+
+ZOCTableViewController *tableViewController = [[ZOCTableViewController alloc] initWithFeedParser:feedParser];
+feedParser.delegate = tableViewController;
+```
+
+到目前为止一切很好，你可能对这个新代码很高兴，但是这些代码到底有多少能被有效的重用呢？ view controllers仅仅能够处理类型是`ZOCFeedParser`的对象，从这点上说，我们仅仅将代码分成了两部分，除了责任划分之外没有任何额外的，实在的价值。
+
+view controller的责任应当是“展示提供的条目”，但是如果我们允许仅`ZOCFeedParser`传入,这是不可能完成的。这儿面临一个view controller中使用一个更加通用类型的对象。
+
+我们引入`ZOCFeedParserProtocol`来修改我们的订阅分析器（在ZOCFeedParserProtocol.h 文件中，`ZOCFeedParserDelegate`依然在那）
+
+```
+@protocol ZOCFeedParserProtocol <NSObject>
+
+@property (nonatomic, weak) id <ZOCFeedParserDelegate> delegate;
+@property (nonatomic, strong) NSURL *url;
+
+- (BOOL)start;
+- (void)stop;
+
+@end
+
+@protocol ZOCFeedParserDelegate <NSObject>
+@optional
+- (void)feedParserDidStart:(id<ZOCFeedParserProtocol>)parser;
+- (void)feedParser:(id<ZOCFeedParserProtocol>)parser didParseFeedInfo:(ZOCFeedInfoDTO *)info;
+- (void)feedParser:(id<ZOCFeedParserProtocol>)parser didParseFeedItem:(ZOCFeedItemDTO *)item;
+- (void)feedParserDidFinish:(id<ZOCFeedParserProtocol>)parser;
+- (void)feedParser:(id<ZOCFeedParserProtocol>)parser didFailWithError:(NSError *)error;
+@end
+```
+
+注意委托协议现在处理遵循我们新协议的对象，并且`ZOCFeedParser`接口文件更加简洁。
+
+```
+@interface ZOCFeedParser : NSObject <ZOCFeedParserProtocol>
+
+- (id)initWithURL:(NSURL *)url;
+
+@end
+```
+
+由于`ZOCFeedParser`现在遵循`ZOCFeedParserProtocol`,他必须实现所有被要求的方法。
+
+从这点上说，view controller 能接受任何遵循这个新协议的对象，确定该对象将响应`start`和`stop`方法并且它将通过委托属性提供信息。这是所有的viewcontroller 应当知道的关于所给对象的信息，并且没有实现细节应当关心。
+
+```
+@interface ZOCTableViewController : UITableViewController <ZOCFeedParserDelegate>
+
+- (instancetype)initWithFeedParser:(id<ZOCFeedParserProtocol>)feedParser;
+
+@end
+```
+
+上面代码片段的修改看起来可能非常小儿科，但是实际上这是一个巨大的提升，因为viewcontroller将依赖约定工作，而不是具体的实现。这可以有很多好处：
+
+* viewcontroller 能够接受任何通过委托属性提供信息的对象：这可能是一个RSS 远程订阅分析器，或者甚至是从本地数据库拉取数据的服务
+* 订阅分析器对象能够完全的服用（就像第一步重构之后）
+* `ZOCFeedParser`和`ZOCFeedParseDelegate`能够被其他的模块复用
+* `ZOCViewController`（UI 逻辑除外）能被复用
+* 由于能够使用一个假的遵循期望协议的对象，所以很容易测试
+
+当你实现一个协议时，你应当努力坚持[替换原则](http://en.wikipedia.org/wiki/Liskov_substitution_principle)。该原则列出你应当在不破坏客户端或者实现的基础上能够用接口（objective-c中的协议）的一个实现替换另外一个。
 
 
-
+换句话说，这意味着，你的协议不应当泄露实现类的细节；
 
 
 
