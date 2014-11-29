@@ -1142,7 +1142,306 @@ view controller的责任应当是“展示提供的条目”，但是如果我�
 当你实现一个协议时，你应当努力坚持[替换原则](http://en.wikipedia.org/wiki/Liskov_substitution_principle)。该原则列出你应当在不破坏客户端或者实现的基础上能够用接口（objective-c中的协议）的一个实现替换另外一个。
 
 
-换句话说，这意味着，你的协议不应当泄露实现类的细节；
+换句话说，这意味着，你的协议不应当泄露实现类的细节；设计协议表达的抽象时要格外的小心，并且时刻记得，背后的实现是不相关的，真正重要的是抽象暴露给用户的抽象。
+
+所有被设计将来重用的代码都是更好的代码，虽然有些现在没有展示出来，并且应当一直是程序员的目标。如此被设计的代码是经验丰富的程序员与新程序员的不同之处。
+
+这块提及的最终代码可以在[这](http://github.com/albertodebortoli/ADBFeedReader)找到。
+
+#NSNotification
+
+当你定义你自己的`NSNotification`时，你应当将通知的名字定义为常量字符串。就像任何常量字符串，应当在共有接口中声明为extern，在相应的私有实现中定义相应的变量。常量的值应当是反过来的DNS标示符。
+
+```
+// Foo.h
+extern NSString * const ZOCFooDidBarNotification
+
+// Foo.m
+NSString * const ZOCFooDidBarNotification = @"com.zenobjective-c.ZOCFooDidBarNotification";
+```
+
+#美化代码
+
+#空格
+
+* 用4个空格缩进。永远不要用tab来缩进。确保在xcode偏好中设置
+* 方法或者其他（`if/else/switch/while`等）花括号开头和该语句在同一行，在新的一行结束
+
+优选的
+
+```
+if (user.isHappy) {
+    //Do something
+}
+else {
+    //Do something else
+}
+```
+
+不推荐的
+
+```
+if (user.isHappy)
+{
+  //Do something
+} else {
+  //Do something else
+}
+```
+
+* 在方法之间恰好有一个空行，使得视觉上更加清晰，更加有组织。方法中的空白应当分割功能，但是通常情况下应当用一个新的方法
+* 优先选择自动synthesis，但是如果必要，`@synthesize`和`@dynamic`在实现中应当是每行声明。
+* 应当总是使用冒号对齐的方法调用。有一些情况，一个方法签名可能含多于3个冒号，冒号对齐使得代码更有可读性。总是用冒号对其方法，即使包含block。
+
+优选的
+
+```
+[UIView animateWithDuration:1.0
+                 animations:^{
+                     // something
+                 }
+                 completion:^(BOOL finished) {
+                     // something
+                 }];
+```
+
+不推荐的
+
+```
+[UIView animateWithDuration:1.0 animations:^{
+    // something 
+} completion:^(BOOL finished) {
+    // something
+}];
+```
+
+如果自动缩进使得代码可读性变差，那么在之前将block声明为变量或者重新考虑你的方法签名。
+
+#换行
+
+既然这个风格指南是为了打印以及在线阅读，所以换行是非常中重要的。
+
+例如
+
+```
+self.productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
+```
+
+像上面的一长行代码应当被转到第二行，参照这个风格指南空格章节（2个空格）
+
+
+```
+self.productsRequest = [[SKProductsRequest alloc] 
+  initWithProductIdentifiers:productIdentifiers];
+```
+
+#括号
+
+对于如下的使用 [Egyptian括号风格](https://en.wikipedia.org/wiki/Indent_style#K.26R_style)
+
+* 控制结构（if-else，for， swith）
+
+如下的使用非Egyptian括号风格：
+
+* 类的实现（如果有的话）
+* 方法的实现
+
+#代码组织
+
+引用Matt Thompson 一句话
+
+> 代码组织是卫生问题
+
+我们非常认同这句话。代码组织简洁以及形成的习惯，是一种展示对将来读并且修改你的代码的你自己以及其他人的尊重的方式（你自己的将来考虑在内）
+
+#利用代码块
+
+一个非常模糊的GCC行为，Clang也是支持的。这就是用代码块返回最后一条语句值的能力，该代码块要求用圆括号闭合。
+
+```
+NSURL *url = ({
+    NSString *urlString = [NSString stringWithFormat:@"%@/%@", baseURLString, endpoint];
+    [NSURL URLWithString:urlString];
+});
+```
+
+这个功能可以很好的组织来分组一些块代码，这些代码通常必须是仅仅用来设置一个类。这可以带给代码阅读者一个非常重要的视觉线索以及帮助减少噪音以便专注函数中最重要变量。额外的，这个技术有一个优势，就是所有的变量在代码块内部声明，如同期待的一样，仅仅在该作用域内部有效，这意味着你没有污染整个方法的堆栈，并且你能重用一个变量名而不至于重复命名。
+
+#编译指示
+
+##pragma mark
+
+`#pragma mark -` 是类中组织代码的一个很好的方式，帮助你对方法的实现分组。
+
+我们建议使用`#pragma mark -`来划分：
+
+* 函数功能分组的函数
+* 协议实现
+* 重写父类的方法
+
+```
+- (void)dealloc { /* ... */ }
+- (instancetype)init { /* ... */ }
+
+#pragma mark - View Lifecycle
+
+- (void)viewDidLoad { /* ... */ }
+- (void)viewWillAppear:(BOOL)animated { /* ... */ }
+- (void)didReceiveMemoryWarning { /* ... */ }
+
+#pragma mark - Custom Accessors
+
+- (void)setCustomProperty:(id)value { /* ... */ }
+- (id)customProperty { /* ... */ }
+
+#pragma mark - IBActions
+
+- (IBAction)submitData:(id)sender { /* ... */ }
+
+#pragma mark - Public
+
+- (void)publicMethod { /* ... */ }
+
+#pragma mark - Private
+
+- (void)zoc_privateMethod { /* ... */ }
+
+#pragma mark - UITableViewDataSource
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath { /* ... */ }
+
+#pragma mark - ZOCSuperclass
+
+// ... overridden methods from ZOCSuperclass
+
+#pragma mark - NSObject
+
+- (NSString *)description { /* ... */ }
+
+```
+
+
+上面的标记将帮助视觉的区分以及组织代码。之所以这么做的一个原因是你可以cmd加点击标记调到符号定义。
+
+要清醒的认识到，即使编译指示是一个匠人情怀程序员的签名，但是这不是一个使得你的类中方法数目无限增长的一个好的原因：拥有太多的方法应当是你的类有太多职责的一个警告标示，以及一个好的重构机会。
+
+#关于编译指示的注解
+
+在[http://raptureinvenice.com/pragmas-arent-just-for-marks](http://raptureinvenice.com/pragmas-arent-just-for-marks)有关于编译指示的很好讨论，这块摘录一部分。
+
+虽然大部分iOS开发者不接触很多编译选项，但有些选项确实对控制怎么样严格检查你的代码中的错误非常有用。有时，即你想在你的代码中使用一个编译指示直接产生一个例外，这个目的可以通过临时关掉编译器的某些行为来做到。
+
+当你使用ARC时，编译器为你插入内存管理调用。 有些情况，即编译器会陷入困惑。这样的一个例子是当你使用`NSSelectorFromString`时，有一个动态的名字的selector被调用。因此ARC不知道该方法是什么，应当使用什么样的内存管理，你讲得到`performSelector may cause a leak because its selector is unknown`的警告。
+
+如果你知道你的代码不会产生内存泄露，你可以对这个实例去除警告，需要像这样包裹代码：
+
+```
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+[myObj performSelector:mySelector withObject:name];
+
+#pragma clang diagnostic pop
+```
+
+注意我们怎样通过在代码周围压入以及弹出改变来使-Warc-performSelector-leaks检查失效。这保证我们不会使检查全局失效，那样是非常严重的错误。
+
+全部单可以生效或者失效的选项可以在[clang用户手册](http://clang.llvm.org/docs/UsersManual.html)中发现来学习关于他们的一切。
+
+禁止对未使用变量的警告。告诉一个你定义的变量未被使用是非常有用的。大多数情况下，你想删除这些对象指向来提高效率（不管多轻微），但是有些时候你想保留他们。为什么？因为他们可能将来会有用处或者函数功能被临时删掉了。不管怎么样，一个更加聪明的禁止该警告的方式是使用`#pragma unused()`,而不是很粗暴的在相应的行注释
+
+```
+- (void)giveMeFive
+{
+    NSString *foo;
+    #pragma unused (foo)
+
+    return 5;
+}
+```
+
+现在你可以在没有编译器警告的情况下将代码保留。并且的确，编译指示应当这些令人不快代码的下面。
+
+#显式的警告以及错误
+
+编译器是一个机器：它使用一组定义在clang中的规则来标记处你代码中什么是错误的。但是，通常你比编译器更加聪明。通常，你可能发下了一些讨厌的代码，你知道这些代码将导致问题，但是由于某些原因，你不能立刻自己修复它。你可以显示的发出错误，像下面这样：
+
+```
+- (NSInteger)divide:(NSInteger)dividend by:(NSInteger)divisor
+{
+    #error Whoa, buddy, you need to check for zero here!
+    return (dividend / divisor);
+}
+```
+
+相似的你可以发出警告
+
+```
+- (float)divide:(float)dividend by:(float)divisor
+{
+    #warning Dude, don't compare floating point numbers like this!
+    if (divisor != 0.0) {
+        return (dividend / divisor);
+    }
+    else {
+        return NAN;
+    }
+}
+```
+
+#文档字符串
+
+所有的主要的方法，接口，分类以及协议声明应当附有相应的描述目的以及在更大的场景中的如何作用的注释。更多的示例可以看google风格指南 大体[文件和声明注释](http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml#File_Comments)一块。
+
+总结来说，有两种风格的文档字符串，长格式以及短格式。
+
+短格式的文档字符串完全在一行，包括注释斜线。它被用在简单函数，尤其对于那些不是公开API一部分的（可是不意味着专门这么用）
+
+```
+*// Return a user-readable form of a Frobnozz, html-escaped.*
+
+```
+
+
+注意文字被指定为一个动作（return）而不是描述（returns）。
+
+如果描述超过了一行，你应当转到长格式文档字符串：一个概要行（物理上的）,前面一个开放的块注释，有两个/**该行的两个星，以句号，问号或者惊叹号，后面一个空行，再后面是其他的文档字符，从与第一个语句第一行相同的光标位置开始，以单独一行注释块的结束块结束。
+
+```
+/**
+ This comment serves to demonstrate the format of a docstring.
+
+ Note that the summary line is always at most one line long, and
+ after the opening block comment, and each line of text is preceded
+ by a single space.
+*/
+```
+
+一个行数除非符合下面所有的条件，否则应当由文档字符串
+
+* 外部不可见
+* 非常端
+* 含义非常明显
+
+文档字符串应当描述函数调用的语法以及语义，而不是实现。
+
+#注释
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
