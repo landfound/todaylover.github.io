@@ -1420,14 +1420,265 @@ NSURL *url = ({
 一个行数除非符合下面所有的条件，否则应当由文档字符串
 
 * 外部不可见
-* 非常端
+* 非常短
 * 含义非常明显
 
 文档字符串应当描述函数调用的语法以及语义，而不是实现。
 
 #注释
 
+当需要的时候，注释应当被用来解释一块代码用来干什么。所有使用的注释应当保持最新的或者直接删除。
 
+整块的注释应当尽量避免，同时代码应当尽可能的自解释，仅需要间歇性，很好几行的注释。例外：这不是用用来产生文档的注释。
+
+#头文档
+
+可能的话，类的文档应当使用Doxygen/AppleDoc语法在.h文件中书写。方法以及属性应当有文档。
+
+例如
+
+```
+/**
+ *  Designated initializer.
+ *
+ *  @param  store  The store for CRUD operations.
+ *  @param  searchService The search service used to query the store.
+ *
+ *  @return A ZOCCRUDOperationsStore object.
+ */
+- (instancetype)initWithOperationsStore:(id<ZOCGenericStoreProtocol>)store
+                          searchService:(id<ZOCGenericSearchServiceProtocol>)searchService;
+```
+
+
+#内部对象通信
+
+每个重要的软件都是在需要与其他对象通信的许多对象基础上建立以完成复杂目标的。这章是关于一些设计考虑，关于第一次深入解释军火库怎么样实现很棒的结构以及是怎么工作的的。
+
+##blocks
+
+Block是多年来其他语言中众所周知的被称为匿名函数(lambdas)或者闭包（closures）的objective-c版本。
+
+它们是非常好的设计一部API的方式，例如
+
+```
+- (void)downloadObjectsAtPath:(NSString *)path
+                   completion:(void(^)(NSArray *objects, NSError *error))completion;
+
+```
+
+设计像上面这样的一些东西时，尝试声明带不止一个block的函数或者方法，并且总是把blocks最为最后的参数。尝试将data与error放在一个block而不是放在两个分开的block（通常一个成功block一个失败block）中是一份好的方法、
+
+你应当这么做，原因如下：
+
+* 通常有部分代码是两者之间共享的（例如：解除进度条或者活动指示器）
+* 苹果就是这么做的，这样做是于平台保持一致的好方法。
+* 由于block典型的是多行代码，如果block不是最有一个参数就会破坏调用点。
+* 使用多余一个block座位参数使得调用点在长度长很可能比较笨拙。也会增加复杂性。
+
+考虑上面的方法，completion block的签名非常通用：第一个参数含义为调用者感兴趣的数据，第二个参数是碰到的错误。因此，约定应当如下：
+
+* 如果`object`不是nil，那么`error`一定是nil
+* 如果`object`是nil， 那么`error`一定不是nil
+
+由于该方法的调用者首先对实际数据感兴趣，推荐这样实现：
+
+```
+- (void)downloadObjectsAtPath:(NSString *)path
+                   completion:(void(^)(NSArray *objects, NSError *error))completion {
+    if (objects) {
+        // do something with the data
+    }
+    else {
+        // some error occurred, 'error' variable should not be nil by contract
+    }
+}
+```
+
+此外，对于异步方法，一些苹果的API 在成功的状态下向error写一些垃圾值，所以检查error可能导致误报。
+
+###高级选项
+
+一些关键点：
+
+* block在栈上创建
+* block被拷贝到堆上
+* block有他们自己的栈值的常量拷贝（和指针）
+* 可变的栈值以及指针必须用__block关键字声明
+
+如果block没有被保留在其他地方，将保留在栈中并且当栈结构返回时将释放。当在栈上时，block对于它使用的东西的存储以及生命周期没有影响。如果block需要在栈退出后依然存在，它们可以被拷贝到堆上，这是一个显式的操作。这种方式下，block将或得引用计数，就如果cocoa中所有其他对象。当它们被拷贝后，它们带上了被它们捕获的作用，保留任何它们引用的对象。如果一个block引用一个栈上的值或者指针，那么当block被初始化时，它将被赋予那个值或者指针它自己的拷贝，该拷贝为不可变的，所以赋值是没有效果的。当一个block被拷贝，block引用的`__block`栈值被拷贝到堆上，而且在拷贝操作之后，栈上的block与堆上新的block都引用堆上的值。
+
+LLDB 展示了block是一篇非常漂亮的事情。
+
+![block debug](/images/blocks_debugger.png)
+
+要注意的最重要的是`__block`值和指针在block里面被当做结构体对待，而且很明显，拥有实际的值/对象的引用。
+
+在objective-c运行时中block是一等公民：它们有一个`isa`指针，该指针定义一个类，并且通过该类objective-c运行时可以获取方法已经存储。在非ARC的环境中，你讲毫无以为的陷入困境，难以捉摸的指针引起崩溃。`__block`仅被用在在block中使用的变量时，对于lock简单的说；
+
+> 嗨，这个指针或者原始的类型挂靠在栈中的地址。请用一个新的栈中值引用这个小朋友。我的意思是... 两方解除引用的使用，不要保留改对象。谢谢先生。
+
+有些时候，在声明之后，block调用之前对象已经被释放并销毁，block的执行将引起崩溃。`__block`值北邮在block里面保留。深入的讲，都是关于指针，引用，解除引用以及引用计数等。
+
+####self上的引用循环
+
+在使用block以及异步分发时不要陷入引用循环是非常重要的。总是对任何值设置`weak`引用可以解决引用循环。此外，将指向block的属性设置为nil是一个好的实践，这可以打破潜在的由该block捕获作用域引入的引用循环。
+
+例如：
+
+```
+__weak __typeof(self) weakSelf = self;
+[self executeBlock:^(NSData *data, NSError *error) {
+    [weakSelf doSomethingWithData:data];
+}];
+```
+
+不要
+
+```
+[self executeBlock:^(NSData *data, NSError *error) {
+  [self doSomethingWithData:data];
+}];
+```
+
+多条语句的示例：
+
+```
+__weak __typeof(self)weakSelf = self;
+[self executeBlock:^(NSData *data, NSError *error) {
+  __strong __typeof(weakSelf)strongSelf = weakSelf;
+  [strongSelf doSomethingWithData:data];
+  [strongSelf doSomethingWithData:data];
+}];
+```
+
+不要
+
+```
+__weak __typeof(self)weakSelf = self;
+[self executeBlock:^(NSData *data, NSError *error) {
+  [weakSelf doSomethingWithData:data];
+  [weakSelf doSomethingWithData:data];
+}];
+```
+
+你应当将这两行加入到xcode的代码片段中，并且像这样一的准确的使用他们
+
+```
+__weak __typeof(self)weakSelf = self;
+__strong __typeof(weakSelf)strongSelf = weakSelf;
+```
+
+这里是我们更加深入的关于细致事情的探究，即关于`__weak`和`__strong`限定符在block中self应用的考虑。总结来说，我们在block中有三种方式引用self:
+
+1. 直接在block中使用`self`关键字
+2. 在block外面声明`__weak`引用self，在block里面通过这个weak引用使用该对象
+3. 在block外面声明`__weak`引用self，在block里面创建`__strong`引用weak引用
+
+*情况1： 在block中使用self关键字*
+
+如果我们直接在block中使用self关键字，在block声明时该block内部对象就被保留（实际上当block被拷贝，但是为了简化的缘故，我们暂时抛开它）。一个不变的到self的引用存在block内部，这影响该对象的引用计数。如果block被其他类或者传递给其他我们想让保留self的对象，就像其他block中使用的对象一样，因为执行block需要他们。
+
+```
+dispatch_block_t completionBlock = ^{
+    NSLog(@"%@", self);
+}
+
+MyViewController *myController = [[MyViewController alloc] init...];
+[self presentViewController:myController
+                   animated:YES
+                 completion:completionHandler];
+```
+
+没有什么大问题，但是。。 如果block被self的一个属性引用（例如下面的例子），因此对象（self）引用block？
+
+```
+self.completionHandler = ^{
+    NSLog(@"%@", self);
+}
+
+MyViewController *myController = [[MyViewController alloc] init...];
+[self presentViewController:myController
+                   animated:YES
+                 completion:self.completionHandler];
+```
+
+这就是广为人知的引用循环，并且引用循环通常应当被避免。我们从clang收到的警告如下：
+
+```
+Capturing <span class="err">'self<span class="err">' strongly in this block is likely to lead to a retain cycle
+```
+
+接下来就是`__weak`限定词
+
+*情况2： 在block外面声明__weak引用，并在block里面使用*
+
+在block外面声明`__weak`self 引用，在block里面通过该weak引用访问该对象可以避免引用循环。这就是如果block已经被self的一个属性所引用时我们通常想做的。
+
+```
+__weak typeof(self) weakSelf = self;
+self.completionHandler = ^{
+    NSLog(@"%@", weakSelf);
+};
+
+MyViewController *myController = [[MyViewController alloc] init...];
+[self presentViewController:myController
+                   animated:YES
+                 completion:self.completionHandler];
+```
+
+在这个示例中，block没有保留对象，对象在一个属性中保留了block。酷。我们确定我们可以安全的访问self了，最坏情况，它被外面某些人置为nil。问题是，在block的作用域内self被销毁（deallocated）可能怎样？
+
+考虑一个block被作为一个属性从一个对象拷到另外一个对象（假设再说myConroller）。之前的对象在被拷贝对象有机会执行前然后被释放。
+
+下一步非常有趣
+
+*情况3：在block外面声明__weak的self引用，在block内部使用__strong引用*
+
+你可能回想这是一个在block内部使用self而不引起引用循环的小技巧。其实并非如此。对self的强引用在block运行时被创建，相比来说，在block中使用self在block声明时就评估好了，这就是保留对象。
+
+[苹果文档](http://developer.apple.com/library/mac/#releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html)说“对于非平凡的循环，你应当使用如下方法”:
+
+```
+MyViewController *myController = [[MyViewController alloc] init...];
+// ...
+MyViewController * __weak weakMyController = myController;
+myController.completionHandler =  ^(NSInteger result) {
+    MyViewController *strongMyController = weakMyController;
+    if (strongMyController) {
+        // ...
+        [strongMyController dismissViewControllerAnimated:YES completion:nil];
+        // ...
+    }
+    else {
+        // Probably nothing...
+    }
+};
+
+```
+
+起初，这个示例我看起来似乎是错的。如果block被`completionHandler`属性保留， self怎么可能在外部被销毁并置为nil呢。`completionHandler`属性可以被声明为`assign`或者`unsafe_unretained`，以便允许在block被传递后对象被销毁。
+
+我不能察觉这样做的原因。如果其他对象需要该对象(self),被传递的block将保留该对象，因此block不应当被赋给一个属性。没有`__weak/__strong`应当在这里使用。
+
+不管怎样，在其他情况下，weakSelf是可能变为nil的，就是第2种情况展示的一样（在block外部声明weak引用，在内部使用该引用）
+
+此外，苹果的不重要的block指什么？不重要的block是没有被传递的block，被用在定义的非常好，控制的非常好的作用域内部，因此weak限定符的使用仅仅用来避免引用循环。
+
+就像许多[参考](https://github.com/AFNetworking/AFNetworking/issues/807)，书()中讨论的这个边界条件，这个话题没有被大量的开发者理解。
+
+在block中使用强引用的真正收获是对于抢占优先的鲁棒性。再次看一下上面三种情况，在block的执行过程中。
+
+
+##委托和数据源
+
+##继承
+
+##多重委托
+
+#面向切面编程
+
+#其他objetive-c风格指南
 
 
 
