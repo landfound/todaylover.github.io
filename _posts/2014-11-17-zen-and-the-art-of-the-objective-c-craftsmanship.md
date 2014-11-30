@@ -730,7 +730,7 @@ dispatch_once()的使用是同步的，替代了底下废弃的惯用方法：
 
 #属性
 
-属性应当被命名为尽可能描述性的，避免所写，驼峰结构，开头字母小写。非常幸运，我们选择的工具几乎能补全我们输入的任何东西（看看 Xcode’s Derived Data）,所以，没有原因省下那么点字符，并且，在你的源码中传达尽可能多的信息是更好的。
+属性应当被命名为尽可能描述性的，避免缩写，驼峰结构，开头字母小写。非常幸运，我们选择的工具几乎能补全我们输入的任何东西（看看 Xcode’s Derived Data）,所以，没有原因省下那么点字符，并且，在你的源码中传达尽可能多的信息是更好的。
 
 例如
 
@@ -742,7 +742,7 @@ dispatch_once()的使用是同步的，替代了底下废弃的惯用方法：
 NSString* text;
 NSString * text;
 ```
-（注解：这种优劣选择对于常量来说是不同的。实际上，这大约是共有的观念以及可读性方面的东西：C++ 开发者更偏向于江变量名与类型分开，这里的话，由于纯粹格式的类型是NSString*（对于分配在堆上的对象，在C++中可能分配在栈上），将使用`NSString* text`）
+（注解：这种优劣选择对于常量来说是不同的。实际上，这大约是共有的观念以及可读性方面的东西：C++ 开发者更偏向于将变量名与类型分开，这里的话，由于纯粹格式的类型是NSString*（对于分配在堆上的对象，在C++中可能分配在栈上），将使用`NSString* text`）
 
 使用自动生成属性而不是手动用`@synthesize`语句，除非你的属性是协议而不是具体类的一部分。如果XCode能够生成变量，就用它的；此外，这是多余的一部分代码，然而你却必须维护它。
 
@@ -773,11 +773,11 @@ NSString * text;
 * [迁移到现代objective-c](http://adcdownload.apple.com//wwdc_2012/wwdc_2012_session_pdfs/session_413__migrating_to_modern_objectivec.pdf) WWDC 2012 27幻灯片
 * Dave 的 [合并请求](https://github.com/NYTimes/objective-c-style-guide/issues/6)
 
-而且，在init中使用init对于`UIAppearence`代理来说不友好。（请参考[自定义视图使用UIAppearence](http://petersteinberger.com/blog/2013/uiappearance-for-custom-views/)）
+而且，在init中使用getter/setter对于`UIAppearence`代理来说不友好。（请参考[自定义视图使用UIAppearence](http://petersteinberger.com/blog/2013/uiappearance-for-custom-views/)）
 
 ### 点符号
 
-使用setter/getter时，经常选用点符号。获取改变属性时应当总是使用点符号。
+使用setter/getter时，经常选用点符号。获取、改变属性时应当总是使用点符号。
 
 例如：
 
@@ -847,7 +847,7 @@ UIApplication.sharedApplication.delegate;
 
 ##可变对象
 
-审核可以被设置为可变对象（`NSString`，`NSArray`,`NSURL`）的属性必须设置内存管理类型为`copy`。这样做是为了确保封装性，阻止在设置了属性之后该属性变化但是对象不知道的情况。
+任何可以被设置为可变对象（`NSString`，`NSArray`,`NSURL`）的属性必须设置内存管理类型为`copy`。这样做是为了确保封装性，阻止在设置了属性之后该属性变化但是对象不知道的情况。
 
 你应当避免在公共接口中暴露可变对象，这允许你的类的使用者改变你自己的内部变现以及打破封装性。。你这一提供一个使用只读来返回你对象的不可变拷贝
 
@@ -898,7 +898,7 @@ UIApplication.sharedApplication.delegate;
 ##相等
 
 
-你需要实现相等时请记住约定：你需要同时实现`isEqual`和`hash`两个方法。如果两个对象对于`isEqual`被认为是相等的，那么`hash`方法必须返回相等的值，但是如果`hash`返回相等的值，对象不一定保证相等。
+你需要实现相等时请记住约定：你需要同时实现`isEqual`和`hash`两个方法。如果两个对象对于`isEqual`被认为是相等的，那么`hash`方法必须返回相等的值，但是如果`hash`返回相等的值，对象则不一定保证相等。
 
 这个约定归结为存储在收集器中的对象怎么做查找（即：`NSDictionary`和`NSSet`底层使用hash表数据结构）
 
@@ -926,7 +926,7 @@ UIApplication.sharedApplication.delegate;
 @end
 ```
 
-需要注意的是hash方法不可以返回常量。这是典型的错误，并且会引起错误，这将一起hash表中100%的冲突，由于hash表中使用hash方法返回的值作为关键字。
+需要注意的是hash方法不可以返回常量。这是典型的错误，并且会引起错误，这将引起hash表中100%的冲突，由于hash表中使用hash方法返回的值作为关键字。
 
 你也应当实现一个类型相等的检查方法，依照下面的格式`isEqualTo<#class-name-without-prefix#>`:如果可能，避免调用调性检查直接调用类型相等方法是更好的选择。
 
