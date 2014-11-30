@@ -16,7 +16,7 @@ iOS-blog [source page](http://ios-blog.co.uk/resources/free-pdf-zen-and-the-art-
 
 #swift
 
-2014年6月6日，苹果宣布一门新的编程语言将被用在iOS和mac开发商：swift。这门新的语言完全不同于objective-c，当然引起了我们写这本书计划的改变。最终变成将这篇文章的现状发布出来，并且不在继续展开我们之前计划包含的话题。
+2014年6月6日，苹果宣布一门新的编程语言将被用在iOS和mac开发上：swift。这门新的语言完全不同于objective-c，当然引起了我们写这本书计划的改变。最终变成将这篇文章的现状发布出来，并且不在继续展开我们之前计划包含的话题。
 
 objective-c 将不在改进，与此同时，继续写一本关于这们语言的数将不会获得同于往日的关注，当然也不是一个聪明的选择。
 
@@ -2115,7 +2115,7 @@ NSDictionary *analyticsConfiguration()
 }
 ```
 
-这块提到的体结构在github上[EF Education First](https://github.com/ef-ctx/JohnnyEnglish/blob/master/CTXUserActivityTrackingManager.m)
+这块提到的结构在github上[EF Education First](https://github.com/ef-ctx/JohnnyEnglish/blob/master/CTXUserActivityTrackingManager.m)
 
 ```
 - (void)setupWithConfiguration:(NSDictionary *)configuration
