@@ -1665,45 +1665,526 @@ myController.completionHandler =  ^(NSInteger result) {
 
 此外，苹果的不重要的block指什么？不重要的block是没有被传递的block，被用在定义的非常好，控制的非常好的作用域内部，因此weak限定符的使用仅仅用来避免引用循环。
 
-就像许多[参考](https://github.com/AFNetworking/AFNetworking/issues/807)，书()中讨论的这个边界条件，这个话题没有被大量的开发者理解。
+就像许多[参考](https://github.com/AFNetworking/AFNetworking/issues/807)，书([有效的objective-c2.0](http://www.effectiveobjectivec.com/),[iOS和OSX高级多线程与内存管理](http://www.amazon.it/Pro-Multithreading-Memory-Management-Ios/dp/1430241160))中讨论的这个边界条件，这个话题没有被大量的开发者理解。
 
 在block中使用强引用的真正收获是对于抢占优先的鲁棒性。再次看一下上面三种情况，在block的执行过程中。
+
+*情况1：在block中使用self关键字*
+
+如果block被一个属性保留，那么就创建了一个self与block之间的引用循环，两个对象都再也不能销毁了。如果block传递给其他对象并拷贝，self每次copy是都被保留一次。
+
+*情况2：在block外面使用__weak引用，在里面使用该引用*
+
+无论block是否被属性保留，都不会存在引用循环。如果block被传递给其他对象并被拷贝，当执行是，weakself可能变为nil。
+
+block的执行可能会被抢占，不同的weakself指针的计算顺序可能导致不同的结果（例如，weakself在确定计算中可能变为nil）
+
+```
+__weak typeof(self) weakSelf = self;
+dispatch_block_t block =  ^{
+    [weakSelf doSomething]; // weakSelf != nil
+    // preemption, weakSelf turned nil
+    [weakSelf doSomethingElse]; // weakSelf == nil
+};
+```
+
+*情况3：block外部声明一个__weak引用，在block内部使用__strong引用*
+
+无论block是否被一个属性保留也没有引用循环。如果block被传递，拷贝给其他对象，当执行时，weakself可能已经变为nil了。当强引用被复制，并且不是nil，我们可以确定该对象在整个block的执行过程中就算抢占发生都被保留，因此stongself的序列执行将会始终如一，并且会得到相同的结果，这是由于该对象被保留了。通常情况如果strongSelf计算为nil，执行将返回，由于block可能不能够执行。
+
+```
+__weak typeof(self) weakSelf = self;
+myObj.myBlock =  ^{
+    __strong typeof(self) strongSelf = weakSelf;
+    if (strongSelf) {
+      [strongSelf doSomething]; // strongSelf != nil
+      // preemption, strongSelf still not nil
+      [strongSelf doSomethingElse]; // strongSelf != nil
+    }
+    else {
+        // Probably nothing...
+        return;
+    }
+};
+```
+
+在ARC的环境中，如果尝试使用`->`符号获取一个实例变量，编译器自己会提示错误。错误非常清晰：
+
+```
+Dereferencing a __weak pointer is not allowed due to possible null value caused by race condition, assign it to a strong variable first.
+```
+
+可以用下面代码展示：
+
+```
+__weak typeof(self) weakSelf = self;
+myObj.myBlock =  ^{
+    id localVal = weakSelf->someIVar;
+};
+```
+
+最后
+
+* *情况1*： 应当仅仅用在block没有被赋值给一个属性的情况下，否则将导致一个引用循环
+* *情况2*：应当用在block被赋给一个属性之时
+* *情况3*：这与并发执行有关，当异步的服务被调用，传递给它们的block将在过后一段时间内被执行，不确定self对象是否存在
 
 
 ##委托和数据源
 
+委托是苹果框架中广泛使用的模式，同时也是Gang of Four的书“设计模式”中最重要的模式之一。委托模式不是直接的，消息发送者（委托者）需要知道消息接受者（被委托者），除了这没有其他。对象之间的耦合松了，发送者仅仅知道被委托者遵循某个特殊协议。
+
+纯形式来说，委托是关于提供给被委托这回调方法，这意味着被委托者实现一组返回void的方法。
+
+不行的是，这个多年来没有被苹果的API遵守，因此开发者模仿这个引导错误的方法。经典的例子是[UITableViewDelegate](https://developer.apple.com/library/ios/documentation/uikit/reference/UITableViewDelegate_Protocol/Reference/Reference.html)协议，当有些方法是void返回类型，看起来像回调：
+
+```
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
+- (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath;
+```
+
+其他没有被定义成那样：
+
+```
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender;
+```
+
+当委托者向被委托者要一些信息是，直接的含义是从被委托者到委托者，并且不在是其他方式。这概念上是不同的，而后一个新的名字将被用来描述这个模式：数据源
+
+有人肯呢过争论说，对数据源来说苹果有[UITableViewDataSource](https://developer.apple.com/library/ios/documentation/uikit/reference/UITableViewDataSource_Protocol/Reference/Reference.html)协议，但是实际上它被用来提供真实信息应当怎么展示的信息，
+
+```
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView;
+```
+
+此外在上面两个方法中，苹果混合了展示层和数据层，这是非常丑陋的，并且最后，长时间以来非常少的开发者对此觉得很烂，甚至这儿我们调用委托方法，两个方法是void返回类型，以及愚蠢的非void。
+
+为了分离概念，应当使用下面的方法：
+
+* 委托模式： 当委托者需要通知被委托者有事件发生
+* 数据源模式；当委托者需要从数据源拉取信息。
+
+这儿是具体的例子
+
+```
+@class ZOCSignUpViewController;
+
+@protocol ZOCSignUpViewControllerDelegate <NSObject>
+- (void)signUpViewControllerDidPressSignUpButton:(ZOCSignUpViewController *)controller;
+@end
+
+@protocol ZOCSignUpViewControllerDataSource <NSObject>
+- (ZOCUserCredentials *)credentialsForSignUpViewController:(ZOCSignUpViewController *)controller;
+@end
+
+@protocol ZOCSignUpViewControllerDataSource <NSObject>
+
+@interface ZOCSignUpViewController : UIViewController
+
+@property (nonatomic, weak) id<ZOCSignUpViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<ZOCSignUpViewControllerDataSource> dataSource;
+
+@end
+```
+
+委托方法必须总是将调用者作为第一个参数，就像上面例子中一样，否则被委托对象不能够区分不同的委托者。换句话说，如果调用者没有传给被委托者对象，任何被委托者没有办法处理两个委托者，所以下面的代码是无法容忍的：
+
+```
+- (void)calculatorDidCalculateValue:(CGFloat)value;
+```
+
+默认的，协议中的方式是要求在被委托者中实现的。标记一些为可选是可能的，显式的关于必须的方法使用`@required`和`optional`关键字，像这样：
+
+```
+@protocol ZOCSignUpViewControllerDelegate <NSObject>
+@required
+- (void)signUpViewController:(ZOCSignUpViewController *)controller didProvideSignUpInfo:(NSDictionary *);
+@optional
+- (void)signUpViewControllerDidPressSignUpButton:(ZOCSignUpViewController *)controller;
+@end
+```
+
+对于可选方法，委托者在发送消息到被委托者之前必须检查被委托者是否实际上实现了特定的方法，（否则会崩溃）
+
+```
+if ([self.delegate respondsToSelector:@selector(signUpViewControllerDidPressSignUpButton:)]) {
+    [self.delegate signUpViewControllerDidPressSignUpButton:self];
+}
+```
+
 ##继承
+
+有时候你需要重写委托方法。考虑你有两个UIViewController子类的情况：UIViewControllerA 和UIViewControllerB，类继承如下：
+
+```
+UIViewControllerB < UIViewControllerA < UIViewController
+```
+
+`UIViewControllerA` 遵循`UITableViewDelegate`并且实现`- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath.`
+
+你想在B类中提供不同的该方法的实现，像下面这种实现可以工作：
+
+```
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat retVal = 0;
+    if ([super respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)]) {
+        retVal = [super tableView:self.tableView heightForRowAtIndexPath:indexPath];
+    }
+    return retVal + 10.0f;
+}
+```
+
+但是如果给的方法在父类（`UIViewControllerA`）中没有实现会怎么样
+
+下面的调用
+
+```
+[super respondsToSelector:@selector(tableView:heightForRowAtIndexPath:)]
+```
+
+将使用NSObject的实现查找，背后实际是在`self`的上下文中，很清楚，self实现了该方法，但是程序在下一行时会崩溃，错误如下：
+
+``` 
+Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '-[UIViewControllerB tableView:heightForRowAtIndexPath:]: unrecognized selector sent to instance 0x8d82820'
+```
+
+在这种情况下，我们需要问一个特定类的实例变量是否响应一个给定的选择器。下面的代码就是处理这个的小技巧
+
+```
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat retVal = 0;
+    if ([[UIViewControllerA class] instancesRespondToSelector:@selector(tableView:heightForRowAtIndexPath:)]) {
+        retVal = [super tableView:self.tableView heightForRowAtIndexPath:indexPath];
+    }
+    return retVal + 10.0f;
+}
+```
+
+像上面的代码是非常丑的，通常找到一种不需要重写委托方法的架构是更好的选择。
 
 ##多重委托
 
+多重委托是一个非常基本的概念，不幸的是，大量的开发者对此非常不熟悉，往往用NSNotifcation替代。就像你注意到的一样，委托和数据源是仅仅两个对象相关的相互通信面试：一个委托者，一个被委托者。
+
+数据源模式被前世是1对1，由于发送者要的信息仅仅能够被一个，且只有一个对象提供。对于委托模式，情况不是这样的，有很多被委托对象在等待回调是完美的原因。
+
+有些情况，最少有两个对象对收到特定委托者的回调感兴趣，后者想知道它所有的被委托者。 这个方法描述了一个更好的分发系统，并且更加通用大的软件中信息流是怎么样的复杂的流动。
+
+多重委托可以通过多种方法达成，读者可以挑战找到一个适当的个人的实现。一个非常灵巧的多重委托的实现使用了Luca Bernardi在[LBDelegateMatrioka](https://github.com/lukabernardi/LBDelegateMatrioska)中给出的转发机制。
+
+这儿给出一个基本试下来呈现相应的概念。即使在cocoa中有一些办法在数据结构中存储weak引用来避免引用循环，这里，我们使用一个类来持有指向被委托对象的引用，就像单个委托所做的一样。
+
+```
+@interface ZOCWeakObject : NSObject
+
+@property (nonatomic, weak, readonly) id object;
+
++ (instancetype)weakObjectWithObject:(id)object;
+- (instancetype)initWithObject:(id)object;
+
+@end
+```
+
+```
+@interface ZOCWeakObject ()
+@property (nonatomic, weak) id object;
+@end
+
+@implementation ZOCWeakObject
+
++ (instancetype)weakObjectWithObject:(id)object {
+    return [[[self class] alloc] initWithObject:object];
+}
+
+- (instancetype)initWithObject:(id)object {
+    if ((self = [super init])) {
+        _object = object;
+    }
+    return self;
+}
+
+- (BOOL)isEqual:(id)object {
+    if (self == object) {
+        return YES;
+    }
+
+    if (![object isKindOfClass:[object class]]) {
+        return NO;
+    }
+
+    return [self isEqualToWeakObject:(ZOCWeakObject *)object];
+}
+
+- (BOOL)isEqualToWeakObject:(ZOCWeakObject *)object {
+    if (!object) {
+        return NO;
+    }
+
+    BOOL objectsMatch = [self.object isEqual:object.object];
+    return objectsMatch;
+}
+
+- (NSUInteger)hash {
+    return [self.object hash];
+}
+
+@end
+```
+
+使用weak对象来实现多重委托的一个简单组成如下
+
+```
+@protocol ZOCServiceDelegate <NSObject>
+@optional
+- (void)generalService:(ZOCGeneralService *)service didRetrieveEntries:(NSArray *)entries;
+@end
+
+@interface ZOCGeneralService : NSObject
+- (void)registerDelegate:(id<ZOCServiceDelegate>)delegate;
+- (void)deregisterDelegate:(id<ZOCServiceDelegate>)delegate;
+@end
+
+@interface ZOCGeneralService ()
+@property (nonatomic, strong) NSMutableSet *delegates;
+@end
+```
+
+```
+@implementation ZOCGeneralService
+- (void)registerDelegate:(id<ZOCServiceDelegate>)delegate {
+    if ([delegate conformsToProtocol:@protocol(ZOCServiceDelegate)]) {
+        [self.delegates addObject:[[ZOCWeakObject alloc] initWithObject:delegate]];
+    }
+}
+
+- (void)deregisterDelegate:(id<ZOCServiceDelegate>)delegate {
+    if ([delegate conformsToProtocol:@protocol(ZOCServiceDelegate)]) {
+        [self.delegates removeObject:[[ZOCWeakObject alloc] initWithObject:delegate]];
+    }
+}
+
+- (void)_notifyDelegates {
+    ...
+    for (ZOCWeakObject *object in self.delegates) {
+        if (object.object) {
+            if ([object.object respondsToSelector:@selector(generalService:didRetrieveEntries:)]) {
+                [object.object generalService:self didRetrieveEntries:entries];
+            }
+        }
+    }
+}
+
+@end
+```
+
+使用`registerDelegate:`和`deregisterDelegate:`方法,可以简单的连接/断开组件之间的联系：如果某时一个被委托者适时对收到委托者的回调不感兴趣了，他有一个机会取消订阅。
+
+这在有不同的view等一些回调来更新展示的信息时非常有用：如果一个view是临时的隐藏（但是仍然活着），取消对这些回调的订阅对他来说是有意义的。
+
+
 #面向切面编程
 
-#其他objetive-c风格指南
+面向切面编程(AOP)是在objective-c社区中没有被很好了解的，但是本应当被了解，由于运行时是非常强大的以至于AOP应当是第一个闪现在头脑中的事情。
+
+不幸的是，由于没有标准的事实上的库，苹果没有准备好任何事情来创造性的使用 并且这个主题离重要还很远，开发者现今仍没有关心它。
+
+引用Wikipedia中[面向切面编程](http://en.wikipedia.org/wiki/Aspect-oriented_programming)中的说法
+
+> 一个切面可以通过在多个被称为切入点（检测是否一个给定的加入点合适）的量化或者分析指定的加入点（程序中的点）使用通知（额外的行为）来替换基本代码（非切面部分程序）的行为，
+
+用objective-c中的语言说，这意味着使用动态特性对特定的方法添加切面。切面带来的额外行为可能为：
+
+* 加入在特定类的特定方法被调用之前执行的代码
+* 加入在特定类的特定方法被调用之后执行的代码
+* 加入替代特定类特定方法原本实现的执行代码
+
+有很多方法来实现这个，这里我们不想深入探究，基本的，它们所有的都利用了运行时的强大功能。
+
+[Peter Steinberger](https://twitter.com/steipete) 写了一个库，[Aspects](https://github.com/steipete/Aspects)完美符合AOP过程。我们发现它可读性非常好，也被设计的非常好，这儿我们将使用它做简单的探究。
+
+对所有AOP库来说，这些库都用运行时做了一些很酷的魔法，替换、增加方法（相比于swizzling技术更加有技巧）。
+
+Aspect的API非常有趣并且很强大
+
+```
++ (id<AspectToken>)aspect_hookSelector:(SEL)selector
+                      withOptions:(AspectOptions)options
+                       usingBlock:(id)block
+                            error:(NSError **)error;
+- (id<AspectToken>)aspect_hookSelector:(SEL)selector
+                      withOptions:(AspectOptions)options
+                       usingBlock:(id)block
+                            error:(NSError **)error;
+```
 
 
+例如，下面的代码将在`myClass`的`myMethod:`方法（必须是实例方法）执行之后执行block参数。
+
+```
+[MyClass aspect_hookSelector:@selector(myMethod:)
+                 withOptions:AspectPositionAfter
+                  usingBlock:^(id<AspectInfo> aspectInfo) {
+            ...
+        }
+                       error:nil];
+```
+
+换句话说，block参数中提供的代码将在`myClass`类的所有对象（或者是类方法的话，就是`MyClass`自身，）的`@selector`参数被执行之后执行。
 
 
+我们为`MyClass`类的`myMethod:`方法添加了一个切面：
 
+通常来说，AOP用来实现横切关系。利用这个完美的例子是分析以及日志。
 
+接下来，我们将展示使用AOP来进行分析。分析是iOS工程中非常流行的功能，有大量的选择，从google analytics，Flurry， MixPanel等。它们大多数都有怎样跟在每个类中添加几行代码来踪特定的view以及事件的教程。
 
+在 Ray Wenderlich的博客中，有一篇在你的view controller中包含一些示例代码来完成用[google ananlytics](https://developers.google.com/analytics/devguides/collection/ios/)跟踪事件的[长文](http://www.raywenderlich.com/53459/google-analytics-ios)
 
+```
+- (void)logButtonPress:(UIButton *)button {
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"UX"
+                                                          action:@"touch"
+                                                           label:[button.titleLabel text]
+                                                           value:nil] build]];
+}
+```
+上面的代码在一个button被按下之后发送一个包含上下文的事件。当你想跟踪屏幕视图时情况变得更糟：
 
+```
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Stopwatch"];
+    [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+}
+```
 
+这对于一个经验丰富的工程师应当视为代码腐朽的气息。实际上我们添加几行本不属于那儿的代码使得view controller很脏乱，这是由于跟踪事件不是view controller的职责。 你可能争论说，你有一个特定的用来负责分析跟踪的对象，并且你讲该对象注入到view controller，但是问题依旧在那，无论你将跟踪逻辑藏在哪： 你最终都会归结到在`viewDidAppear`方法中插入几行代码。
 
+我们可以使用AOP在指定的`viewDidAppear`方法中追踪屏幕视图，并且，更进一步，我们可以使用同样的方法在其他我们感兴趣的方法中添加事件追踪，例如当用户按下一个按钮(例如：琐碎的相应IBAction的调用)
 
+这种方法是非常干净并且不容易察觉的
 
+* view controller将不被那些自然不属于它们的代码污染
+* 对所以添加到我们代码中的切面指定一个SPOC（单点配置）文件成为可能
+* SPC应当在程序开启时就被用来添加切面
+* 如果SPOC文件是有缺陷的，那么最少有一个选择器或者类没有被发现，那么程序在开启时会崩溃（这对于我们的目的来说很酷）
+* 公司中负责分析的团队通常提供一个需要追踪的列表文档，这些文档然后很容易转化为SPOC文件
+* 由于追踪的逻辑现在是抽象的，宽展成更多分析提供者成为可能
+* 对屏幕视图来说，在SPOC文件中指定相关类（相应的切面将被加入`viewDidAppear:`）就够了对于事件，指定选择器是必须的。为了发送屏幕视图和事件，一个跟踪标签以及可能附加元数据被需要用来提供额外的信息（依赖分析提供者）
 
+你可能想要一个类似于下面的SPOC文件（.plist文件也是非常合适的）
 
+```
+NSDictionary *analyticsConfiguration()
+{
+    return @{
+        @"trackedScreens" : @[
+            @{
+                @"class" : @"ZOCMainViewController",
+                @"label" : @"Main screen"
+                }
+             ],
+        @"trackedEvents" : @[
+            @{
+                @"class" : @"ZOCMainViewController",
+                @"selector" : @"loginViewFetchedUserInfo:user:",
+                @"label" : @"Login with Facebook"
+                },
+            @{
+                @"class" : @"ZOCMainViewController",
+                @"selector" : @"loginViewShowingLoggedOutUser:",
+                @"label" : @"Logout with Facebook"
+                },
+            @{
+                @"class" : @"ZOCMainViewController",
+                @"selector" : @"loginView:handleError:",
+                @"label" : @"Login error with Facebook"
+                },
+            @{
+                @"class" : @"ZOCMainViewController",
+                @"selector" : @"shareButtonPressed:",
+                @"label" : @"Share button"
+                }
+             ]
+    };
+}
+```
 
+这块提到的体结构在github上[EF Education First](https://github.com/ef-ctx/JohnnyEnglish/blob/master/CTXUserActivityTrackingManager.m)
 
+```
+- (void)setupWithConfiguration:(NSDictionary *)configuration
+{
+    // screen views tracking
+    for (NSDictionary *trackedScreen in configuration[@"trackedScreens"]) {
+        Class clazz = NSClassFromString(trackedScreen[@"class"]);
 
+        [clazz aspect_hookSelector:@selector(viewDidAppear:)
+                       withOptions:AspectPositionAfter
+                        usingBlock:^(id<AspectInfo> aspectInfo) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *viewName = trackedScreen[@"label"];
+                [tracker trackScreenHitWithName:viewName];
+            });
+        }];
 
+    }
 
+    // events tracking
+    for (NSDictionary *trackedEvents in configuration[@"trackedEvents"]) {
+        Class clazz = NSClassFromString(trackedEvents[@"class"]);
+        SEL selektor = NSSelectorFromString(trackedEvents[@"selector"]);
 
+        [clazz aspect_hookSelector:selektor
+                       withOptions:AspectPositionAfter
+                        usingBlock:^(id<AspectInfo> aspectInfo) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                UserActivityButtonPressedEvent *buttonPressEvent = [UserActivityButtonPressedEvent eventWithLabel:trackedEvents[@"label"]];
+                [tracker trackEvent:buttonPressEvent];
+            });
+        }];
 
+    }
+}
+```
 
+#参考
 
+这里是一些调到风格指南的苹果文档
 
+* [objective-c编程语言](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html)
+* [cocoa基础指南](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CocoaFundamentals/Introduction/Introduction.html)
+* [cocoa编码指南](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
+* [iOS App编程指南](http://developer.apple.com/library/ios/#documentation/iphone/conceptual/iphoneosprogrammingguide/Introduction/Introduction.html)
+* [苹果objective-c惯例](https://developer.apple.com/library/ios/documentation/cocoa/conceptual/ProgrammingWithObjectiveC/Conventions/Conventions.html)
 
+其他的
 
+* [objective-c整洁之道](http://objclean.com/)写出一个xcode集成下写objective-c代码的标准
+* [Uncrustify](http://uncrustify.sourceforge.net/)源码美化
+
+#其他objective-c风格指南
+
+这里有一些提到风格指南的苹果文档，如果本文中有没有提及的，那么很有可可能在下面这些详情里
+
+* [objective-c编程语言](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html)
+* [cocoa基础指南](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CocoaFundamentals/Introduction/Introduction.html)
+* [cocoa编码指南](https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
+* [iOS App编程指南](http://developer.apple.com/library/ios/#documentation/iphone/conceptual/iphoneosprogrammingguide/Introduction/Introduction.html)
+
+来自社区
+
+* [NSTimes objective-c风格指南](https://github.com/NYTimes/objetive-c-style-guide)
+* [google](http://google-styleguide.googlecode.com/svn/trunk/objcguide.xml)
+* [github](https://github.com/github/objective-c-conventions)
+* [Adium](https://trac.adium.im/wiki/CodingStyle)
+* [Sam soffes](https://gist.github.com/soffes/812796)
+* [CocoaDevCentral](http://cocoadevcentral.com/articles/000082.php)
+* [Luke Redpath](http://lukeredpath.co.uk/blog/my-objective-c-style-guide.html)
+* [Marcus Zarra](http://www.cimgf.com/zds-code-style-guide/)
+* [Ray Wenderlich](https://github.com/raywenderlich/objective-c-style-guide)
