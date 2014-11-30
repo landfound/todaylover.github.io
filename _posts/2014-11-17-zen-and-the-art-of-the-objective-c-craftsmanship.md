@@ -965,7 +965,7 @@ UIApplication.sharedApplication.delegate;
 
 我们知道这是非常丑陋的，但是分类应当以你自己的小写前缀以及一个下划线为前缀，例如`- (id)zoc_myCategoryMethod`。 这个实践也是[苹果推荐](https://developer.apple.com/library/ios/documentation/cocoa/conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html#//apple_ref/doc/uid/TP40011210-CH6-SW4)的。
 
-这样做是绝对必要的，因为实现一个存在于其他扩展对象或分类中的名字的方法，会导致不确定的行为。实践来说，最后一个家在的分类的方法是被调用的方法。
+这样做是绝对必要的，因为实现一个存在于其他扩展对象或分类中的名字的方法，会导致不确定的行为。实践来说，最后一个加载的分类的方法是被调用的方法。
 
 如果你想确定你没有用你的分类替换已有的实现，你可以设置环境变量`OBJC_PRINT_REPLACED_METHODS`为`YES`，这样做将在控制台打印出被替换的方法的名字。写代码时，LLVM5.1 不会对此提示任何警告或者错误，所有仔细一点不要覆盖了分类中的方法。
 
