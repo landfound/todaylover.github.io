@@ -37,7 +37,8 @@ links:
 timezone:    America/New_York
 future:      true
 highlighter: pygments
-markdown:    kramdown
+#markdown:    kramdown
+markdown:   redcarpet
 
 kramdown:
   auto_ids: true
