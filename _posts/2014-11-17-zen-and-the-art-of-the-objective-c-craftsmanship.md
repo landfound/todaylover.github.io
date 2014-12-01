@@ -748,7 +748,7 @@ NSString * text;
 
 除了在`init`和`dealloc`中，你总是应该使用 getter 和 setter 来获取属性。一般而言，使用属性，你能在视觉上有一些线索，你正在获取的对象是在你的当前作用域之外，因此受副作用影响。
 
-你影响总是选择 setter,原因如下：
+你应当总是选择 setter,原因如下：
 
 * 使用 setter 将遵循预定义的内存管理语法（`strong`,`weak`,`copy`等）。这些定义在ARC 之前是更加相关的，但现在仍相关；想一下这个例子: `copy`语法，每次你使用setter，不用其他任何操作传递的值被拷贝一份。
 * KVO 通知将自动触发（`willChangeValueForKey`和`didChangeValueForKey`）
@@ -767,9 +767,9 @@ NSString * text;
 
 ## init和Dealloc
 
-这儿以一个礼物外需要提前列出：你永远不要再init中使用getter或者setter（其他init方法也是如此），替代的你应当总是直接通过实例变量获取变量。这是对子类化的一些防范措施：最终子类可以重写getter或者setter方法，并可能调用其他方法，其他方法中获取的属性或者iVars可能是不确定状态的或者没有全部初始化的。记住一个对象在init返回后才被认为是完全初始化。这些同样在`dealloc`中适用（在`dealloc`中，对象可能在不确定状态）。这之前也被清楚的列出过好多次：
+这儿以一个例外需要提前列出：你永远不要再init中使用getter或者setter（其他init方法也是如此），替代的你应当总是直接通过实例变量获取变量。这是对子类化的一些防范措施：最终子类可以重写getter或者setter方法，并可能调用其他方法，其他方法中获取的属性或者iVars可能是不确定状态的或者没有全部初始化的。记住一个对象在init返回后才被认为是完全初始化。这些同样在`dealloc`中适用（在`dealloc`中，对象可能在不确定状态）。这之前也被清楚的列出过好多次：
 
-* [高级内存管理指南](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW6)在self解释说明章节"不要使用在初始化或者销毁时获取方法"
+* [高级内存管理指南](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW6)在self解释说明章节"不要在初始化或者销毁时使用获取方法"
 * [迁移到现代objective-c](http://adcdownload.apple.com//wwdc_2012/wwdc_2012_session_pdfs/session_413__migrating_to_modern_objectivec.pdf) WWDC 2012 27幻灯片
 * Dave 的 [合并请求](https://github.com/NYTimes/objective-c-style-guide/issues/6)
 
