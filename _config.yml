@@ -1,20 +1,20 @@
-title:            Balzac
-tagline:          A beautiful theme.
-description:      Describe your website.
-canonical: http://jekyll.gtat.me
+title:            日落黄昏雨
+tagline:          月照子时星
+description:      我折了一片树叶，一个蚂蚁正在徘徊
+canonical: http://blog.tupiance.com
 
 # Owner/author information
 owner:
-  name:           Cole Townsend
+  name:           xuehui
   avatar:         avatar.png
-  bio:            "Aesthete & Athlete"
-  email:          cole@coletownsend.com
-  twitter:        twnsndco
-  github:         coletownsend
-  instagram:      ctrunsthis
-  dribbble:       coletownsend
-  disqus:         balzac
-  location:       "Buffalo, NY"
+  bio:            ""
+  email:          huixue@outlook.com
+  twitter:        HuixueThu
+  github:         todaylover
+#  instagram:      ctrunsthis
+#  dribbble:       coletownsend
+#  disqus:         balzac
+  location:       "changpin,beijing"
   # Plug in your disqus shortname!
 
 tools:
@@ -28,9 +28,6 @@ links:
     url: /about
   - title: Github
     url: https://github.com/ColeTownsend/Balzac-for-Jekyll
-    external: true
-  - title: Cole Who?
-    url: http://coletownsend.com
     external: true
 
 # http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
