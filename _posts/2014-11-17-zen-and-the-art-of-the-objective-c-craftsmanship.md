@@ -1526,7 +1526,7 @@ LLDB 展示了block是一篇非常漂亮的事情。
 
 例如：
 
-``` objc
+```objc
 __weak __typeof(self) weakSelf = self;
 [self executeBlock:^(NSData *data, NSError *error) {
     [weakSelf doSomethingWithData:data];
@@ -1535,7 +1535,7 @@ __weak __typeof(self) weakSelf = self;
 
 不要
 
-``` objc
+```objc
 [self executeBlock:^(NSData *data, NSError *error) {
   [self doSomethingWithData:data];
 }];
@@ -1543,7 +1543,7 @@ __weak __typeof(self) weakSelf = self;
 
 多条语句的示例：
 
-``` objc
+```objc
 __weak __typeof(self)weakSelf = self;
 [self executeBlock:^(NSData *data, NSError *error) {
   __strong __typeof(weakSelf)strongSelf = weakSelf;
@@ -1554,7 +1554,7 @@ __weak __typeof(self)weakSelf = self;
 
 不要
 
-```
+```objc
 __weak __typeof(self)weakSelf = self;
 [self executeBlock:^(NSData *data, NSError *error) {
   [weakSelf doSomethingWithData:data];
