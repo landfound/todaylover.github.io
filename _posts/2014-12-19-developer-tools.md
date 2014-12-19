@@ -66,6 +66,8 @@ category: articles
 
 ## 自动部署
 
+[capistrano](https://github.com/capistrano/capistrano) 自动化部署不同环境
+
 ## 持续集成
 
 
