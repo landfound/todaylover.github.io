@@ -48,8 +48,8 @@ category: articles
 
 * [SimulatorManager](https://github.com/tue-savvy/SimulatorManager) 快速管理simulator数据
 * [VVDocumenter-Xcode](https://github.com/onevcat/VVDocumenter-Xcode ) 快速插入注释文档的xcode 插件
-* [xcproj](https://github.com/0xced/xcproj) 与cocoapod配合必须凭，如果不想仓库快速增加的话
-* [Unused](https://github.com/jeffhodnett/Unused) 清理不必呀的图片资源
+* [xcproj](https://github.com/0xced/xcproj) 与cocoapod配合必须的，如果不想仓库快速增加的话
+* [Unused](https://github.com/jeffhodnett/Unused) 清理不必要的图片资源
 * [iReSign](https://github.com/maciekish/iReSign) 重新签名的工具
 * [Alcatraz](https://github.com/supermarin/Alcatraz) xcode 插件管理工具，必须安装哈
 * [xctool](https://github.com/facebook/xctool) 替代xcodebuild东西，可配置化，输出友好
