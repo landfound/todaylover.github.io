@@ -32,15 +32,29 @@ category: articles
 * [GCDWebServer](https://github.com/swisspol/GCDWebServer) 好吧，iOS上可以直接搭建web服务器
 * [BeeFramework](https://github.com/gavinkwoe/BeeFramework) XML 来写界面的一整套框架，整体功能很强大，用到了大量消息转发机制，很依赖约定。比较担心的是快速跟上苹果API 更新步伐问题
 * [WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge) javascript 与objc的桥接，objc注册回调或者直接发送消息
-* 
+* [VCTransitionsLibrary](https://github.com/ColinEberhardt/VCTransitionsLibrary) 一些navigation 的transition 效果
+* [CocoaSPDY](https://github.com/twitter/CocoaSPDY) spdy 协议iOS实现，替代http协议的东西，但是推广比较慢。比较适合列表式请求
+* [plcrashreporter](https://github.com/plausiblelabs/plcrashreporter) 程序崩溃后，堆栈的walker，有名的崩溃收集程序底层都是用这个。 竟然不支持short version， 自己加呗
+* [TTTAttributedLabel](https://github.com/TTTAttributedLabel) 可以检测链接的label，用来将特定的字段作为链接
+* [BlocksKit](https://github.com/zwaldowski/BlocksKit) 将block回调应用到各个方向的工具集。最方便的是作为observer回调使用。
+* [fmdb](https://github.com/ccgus/fmdb) sqlite的操作封装
+* [ReactiveCocoa](https://github.com/ReactiveCocoa/ReactiveCocoa) 信号机制在objective-c中的工具库，基于函数式编程的解包操作bind。用来做异步数据变动的绑定操作
+* [PonyDebugger](https://github.com/square/PonyDebugger) 很强到的视图调试工具，也可用来调试网络数据以及coredata。自从用了*FLEX*后就很少用了
+* [AFNetworking](https://github.com/AFNetworking/AFNetworking) 网络数据请求的轻量级库，稍微自定义一下就是自己的基础库。
+* [GPUImage](https://github.com/BradLarson/GPUImage) 图片处理的必备库，可以添加各种效果
+* [Aspects](https://github.com/steipete/Aspects) objective-c 面向切面编程的库，依赖于objective-c runtime的方法动态替换功能
 
 ## xcode工具
 
 * [SimulatorManager](https://github.com/tue-savvy/SimulatorManager) 快速管理simulator数据
 * [VVDocumenter-Xcode](https://github.com/onevcat/VVDocumenter-Xcode ) 快速插入注释文档的xcode 插件
 * [xcproj](https://github.com/0xced/xcproj) 与cocoapod配合必须凭，如果不想仓库快速增加的话
-* 
-
+* [Unused](https://github.com/jeffhodnett/Unused) 清理不必呀的图片资源
+* [iReSign](https://github.com/maciekish/iReSign) 重新签名的工具
+* [Alcatraz](https://github.com/supermarin/Alcatraz) xcode 插件管理工具，必须安装哈
+* [xctool](https://github.com/facebook/xctool) 替代xcodebuild东西，可配置化，输出友好
+* [class-dump](https://github.com/nygard/class-dump) oc 查看类结构的工具 
+* [chisel](https://github.com/facebook/chisel) 视图调试工具，可以debug时隐藏视图，显示视图，增加边框，以及打印出视图结构等
 
 
 
@@ -48,8 +62,10 @@ category: articles
 
 #后台
 
-## ruby
+## 框架
 
-## php
+## 自动部署
 
-## java
+## 持续集成
+
+
