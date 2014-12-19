@@ -72,6 +72,7 @@ category: articles
 * [IT橘子](http://itjuzi.com/) 创业者打鸡血的网站，看看都觉得这是你的时代
 * [kickstarter.com](https://www.kickstarter.com/) 众筹项目
 * [techcrunch.com](http://techcrunch.com/) 科技博客
+* [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 
 #设计
 
@@ -83,6 +84,13 @@ category: articles
 
 #android
 
+#web
+
+* [bootcss.com](http://www.bootcss.com/) bootstrap的中文案例
+* [getbootstrap.com](http://getbootstrap.com/) bootstrap 官网，用来快速搭建可接受的web页面
+* [yui](http://yuilibrary.com/) 
+* [YUI CN](http://www.yuicn.org/)
+
 #后台
 
 ## 框架
@@ -92,5 +100,20 @@ category: articles
 [capistrano](https://github.com/capistrano/capistrano) 自动化部署不同环境
 
 ## 持续集成
+
+#协作
+
+* [tower](https://tower.im) 轻型项目管理网站，可以简单的多人合作
+* [trello](https://trello.com/) 看板网站，敏捷开发的执行
+* [qq企业邮箱]()  挺好用的，基本功能免费
+
+#代码托管
+
+* github 付费托管
+* [自己搭建git服务](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-git-server-on-a-vps)，仅仅提供git托管服务，可以配合[reviewboard](https://www.reviewboard.org/)来进行code review
+* [gitlab](https://github.com/gitlabhq/gitlabhq) 搭建自己的github
+* [bitbucket](http://bitbucket.org) 五个人以下的项目不收费
+* [gerrit](https://code.google.com/p/gerrit/) 主要用来代码review了
+* 本地git + 网盘
 
 
