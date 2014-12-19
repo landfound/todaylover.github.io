@@ -56,6 +56,29 @@ category: articles
 * [class-dump](https://github.com/nygard/class-dump) oc 查看类结构的工具 
 * [chisel](https://github.com/facebook/chisel) 视图调试工具，可以debug时隐藏视图，显示视图，增加边框，以及打印出视图结构等
 
+## 分发平台
+
+* [fir](http://fir.im)  配合第三方企业签名修改
+* [pgyer](http://pgyer.com) 自带企业发布
+* [testflight](http://testflightapp.com) 被苹果收购的分发平台，网速还可以忍，已经到张家口了
+
+
+
+# 综合网站
+
+* [medium.com](https://medium.com/)
+* [joelonsoftware.com](http://www.joelonsoftware.com/) 软件工程实践相关经验
+* [hackernews](https://news.ycombinator.com/) 讨论质量蛮高的一个技术者网站，最新的动态
+* [IT橘子](http://itjuzi.com/) 创业者打鸡血的网站，看看都觉得这是你的时代
+* [kickstarter.com](https://www.kickstarter.com/) 众筹项目
+* [techcrunch.com](http://techcrunch.com/) 科技博客
+
+#设计
+
+* [uisdc.com](http://hao.uisdc.com/) 设计导航网站，好吧，其他的全在里面
+* [sketch](http://bohemiancoding.com/sketch/) 简单的画矢量图的工具，[教程](https://designcode.io/sketch)
+* [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
+
 
 
 #android
