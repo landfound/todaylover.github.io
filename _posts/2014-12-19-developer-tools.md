@@ -87,16 +87,39 @@ category: articles
 
 #android
 
+* [http://www.apportable.com/](http://www.apportable.com/) objective-c 接口的android
+* [http://www.stellasdk.org/](http://www.stellasdk.org/) objective-c android接口
+* 
+
+
+
+
 #web
+
+##综合网站
 
 * [bootcss.com](http://www.bootcss.com/) bootstrap的中文案例
 * [getbootstrap.com](http://getbootstrap.com/) bootstrap 官网，用来快速搭建可接受的web页面
 * [yui](http://yuilibrary.com/) 
 * [YUI CN](http://www.yuicn.org/)
+* [http://www.w3schools.com/](http://www.w3schools.com/) web相关基础知识大全
+
+## 第三方库
+
+* [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
+* 
 
 #后台
 
 ## 框架
+
+* [playframework](https://www.playframework.com) playframework , scala开发后台
+* [restlet](https://github.com/restlet) MVC java web 框架
+* [spring-framework](https://github.com/spring-projects/spring-framework) java MVC web 框架
+* rails
+	* [rails-composer](https://github.com/RailsApps/rails-composer)  rails 创建引导
+	
+
 
 ## 自动部署
 
