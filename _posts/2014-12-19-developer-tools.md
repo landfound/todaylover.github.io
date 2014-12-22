@@ -81,6 +81,7 @@ category: articles
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
 * [http://iosfonts.com/](http://iosfonts.com/) iOS可用字体
 * [http://www.zcool.com.cn/](http://www.zcool.com.cn/) 设计素材库
+* [http://www.pinterest.com/](http://www.pinterest.com/) pinterest图片收藏网站，可以搜索出想要的好图片，国内的有[huaban.com](http://huaban.com)
 
 
 
