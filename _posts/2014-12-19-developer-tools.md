@@ -74,6 +74,17 @@ category: articles
 * [techcrunch.com](http://techcrunch.com/) 科技博客
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 
+--------------
+
+* [http://luosimao.com/](http://luosimao.com/) 短信以及语音合作平台
+* [http://www.yunpian.com/](http://www.yunpian.com/) 短信验证平台
+* [http://open.189.cn/](http://open.189.cn/) 很贵的短信平台
+
+-------
+
+
+
+
 #设计
 
 * [uisdc.com](http://hao.uisdc.com/) 设计导航网站，好吧，其他的全在里面
