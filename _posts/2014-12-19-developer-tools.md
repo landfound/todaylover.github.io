@@ -122,6 +122,11 @@ category: articles
 
 #后台
 
+## 服务后台
+
+* [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
+* [https://parse.com/](https://parse.com/) 国外的云开发环境，包括push，统计等，与leancloud基本类似
+
 ## 框架
 
 * [playframework](https://www.playframework.com) playframework , scala开发后台
