@@ -63,6 +63,11 @@ category: articles
 * [testflight](http://testflightapp.com) 被苹果收购的分发平台，网速还可以忍，已经到张家口了
 
 
+## 高级
+
+* [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
+* 
+
 
 # 综合网站
 
@@ -75,14 +80,20 @@ category: articles
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 * [http://www.devstore.cn/](http://www.devstore.cn/) 开发者所需要的各种东西的集合，比如推送，短信，人脸识别
 
---------------
+-----
 
 * [http://luosimao.com/](http://luosimao.com/) 短信以及语音合作平台
 * [http://www.yunpian.com/](http://www.yunpian.com/) 短信验证平台
 * [http://open.189.cn/](http://open.189.cn/) 很贵的短信平台
 
--------
+-----
 
+* [http://xamarin.com/](http://xamarin.com/) C# 跨平台开发，收费
+
+-----
+
+* [http://www.tuspark.com/](http://www.tuspark.com/)清华科技园孵化器
+* [http://chkinn.com](http://chkinn.com) 创客inn，创业一站式服务
 
 
 
