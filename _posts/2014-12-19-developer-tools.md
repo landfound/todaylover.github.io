@@ -73,6 +73,7 @@ category: articles
 * [kickstarter.com](https://www.kickstarter.com/) 众筹项目
 * [techcrunch.com](http://techcrunch.com/) 科技博客
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
+* [http://www.devstore.cn/](http://www.devstore.cn/) 开发者所需要的各种东西的集合，比如推送，短信，人脸识别
 
 --------------
 
@@ -126,6 +127,7 @@ category: articles
 
 * [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
 * [https://parse.com/](https://parse.com/) 国外的云开发环境，包括push，统计等，与leancloud基本类似
+* [https://pingplusplus.com/](https://pingplusplus.com/) 多方支付接口封装
 
 ## 框架
 
