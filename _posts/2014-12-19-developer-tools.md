@@ -101,6 +101,7 @@ category: articles
 
 * [uisdc.com](http://hao.uisdc.com/) 设计导航网站，好吧，其他的全在里面
 * [sketch](http://bohemiancoding.com/sketch/) 简单的画矢量图的工具，[教程](https://designcode.io/sketch)
+	* [sketch-measure](https://github.com/utom/sketch-measure) sketch 自动标注插件，使用sketch必须的 
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
 * [http://iosfonts.com/](http://iosfonts.com/) iOS可用字体
 * [http://www.zcool.com.cn/](http://www.zcool.com.cn/) 设计素材库
