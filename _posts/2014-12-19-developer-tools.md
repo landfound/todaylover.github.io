@@ -63,6 +63,12 @@ category: articles
 * [testflight](http://testflightapp.com) 被苹果收购的分发平台，网速还可以忍，已经到张家口了
 
 
+## 依赖管理
+
+* [Carthage](https://github.com/Carthage/Carthage) iOS8 引进framework后出现的framework依赖管理， 配置文件cartfile
+* [CocoaPods](https://github.com/CocoaPods/CocoaPods) workspace subproject 源码管理，配置文件podfile，可以指定源码路径
+
+
 ## 高级
 
 * [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
@@ -105,7 +111,9 @@ category: articles
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
 * [http://iosfonts.com/](http://iosfonts.com/) iOS可用字体
 * [http://www.zcool.com.cn/](http://www.zcool.com.cn/) 设计素材库
+* [http://www.sccnn.com/](http://www.sccnn.com/) 素材库
 * [http://www.pinterest.com/](http://www.pinterest.com/) pinterest图片收藏网站，可以搜索出想要的好图片，国内的有[huaban.com](http://huaban.com)
+* [dribbble](https://dribbble.com/) 
 
 
 
@@ -113,7 +121,6 @@ category: articles
 
 * [http://www.apportable.com/](http://www.apportable.com/) objective-c 接口的android
 * [http://www.stellasdk.org/](http://www.stellasdk.org/) objective-c android接口
-* 
 
 
 
