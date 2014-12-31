@@ -69,6 +69,12 @@ category: articles
 * [CocoaPods](https://github.com/CocoaPods/CocoaPods) workspace subproject 源码管理，配置文件podfile，可以指定源码路径
 
 
+## 资源
+
+* [http://code4app.net/](http://code4app.net/) 一些iOS常用模块代码，英文
+* [http://code4app.com/](http://code4app.com/) 同上，是中文的
+* 
+
 ## 高级
 
 * [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
@@ -85,6 +91,7 @@ category: articles
 * [techcrunch.com](http://techcrunch.com/) 科技博客
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 * [http://www.devstore.cn/](http://www.devstore.cn/) 开发者所需要的各种东西的集合，比如推送，短信，人脸识别
+* [http://mob.com/](http://mob.com/) shareSDK，短信SDK 等
 
 -----
 
@@ -100,6 +107,7 @@ category: articles
 
 * [http://www.tuspark.com/](http://www.tuspark.com/)清华科技园孵化器
 * [http://chkinn.com](http://chkinn.com) 创客inn，创业一站式服务
+* [http://51shebao.com/](http://51shebao.com/) 代缴社保
 
 
 
