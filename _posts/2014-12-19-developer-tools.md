@@ -43,6 +43,7 @@ category: articles
 * [AFNetworking](https://github.com/AFNetworking/AFNetworking) 网络数据请求的轻量级库，稍微自定义一下就是自己的基础库。
 * [GPUImage](https://github.com/BradLarson/GPUImage) 图片处理的必备库，可以添加各种效果
 * [Aspects](https://github.com/steipete/Aspects) objective-c 面向切面编程的库，依赖于objective-c runtime的方法动态替换功能
+* [NYXImagesKit](https://github.com/Nyx0uf/NYXImagesKit) 图片处理的一些库，包括比例压缩，图片格式转换，图片简单滤镜
 
 ## xcode工具
 
