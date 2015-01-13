@@ -6,7 +6,7 @@ category: articles
 
 #iOS
 
-## 第三方库
+### 第三方库
 
 * [Mantle](https://github.com/Mantle/Mantle) model对象基类。基于objective-c runtime 来获取property，进行objective-c对象与其他数据结构的map操作。包括json， coredata等。也实现了NSCoding协议
 * [TapkuLibrary](https://github.com/devinross/tapkulibrary) 一些基础工具集。 包块常用的消息提示控件，进度控件，日期控件，滑动高亮label控件，自定义键盘控件以及一些简单常用操作封装
@@ -45,7 +45,7 @@ category: articles
 * [Aspects](https://github.com/steipete/Aspects) objective-c 面向切面编程的库，依赖于objective-c runtime的方法动态替换功能
 * [NYXImagesKit](https://github.com/Nyx0uf/NYXImagesKit) 图片处理的一些库，包括比例压缩，图片格式转换，图片简单滤镜
 
-## xcode工具
+### xcode工具
 
 * [SimulatorManager](https://github.com/tue-savvy/SimulatorManager) 快速管理simulator数据
 * [VVDocumenter-Xcode](https://github.com/onevcat/VVDocumenter-Xcode ) 快速插入注释文档的xcode 插件
@@ -57,26 +57,26 @@ category: articles
 * [class-dump](https://github.com/nygard/class-dump) oc 查看类结构的工具 
 * [chisel](https://github.com/facebook/chisel) 视图调试工具，可以debug时隐藏视图，显示视图，增加边框，以及打印出视图结构等
 
-## 分发平台
+### 分发平台
 
 * [fir](http://fir.im)  配合第三方企业签名修改
 * [pgyer](http://pgyer.com) 自带企业发布
 * [testflight](http://testflightapp.com) 被苹果收购的分发平台，网速还可以忍，已经到张家口了
 
 
-## 依赖管理
+### 依赖管理
 
 * [Carthage](https://github.com/Carthage/Carthage) iOS8 引进framework后出现的framework依赖管理， 配置文件cartfile
 * [CocoaPods](https://github.com/CocoaPods/CocoaPods) workspace subproject 源码管理，配置文件podfile，可以指定源码路径
 
 
-## 资源
+### 资源
 
 * [http://code4app.net/](http://code4app.net/) 一些iOS常用模块代码，英文
 * [http://code4app.com/](http://code4app.com/) 同上，是中文的
 * 
 
-## 高级
+### 高级
 
 * [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
 * 
@@ -128,9 +128,21 @@ category: articles
 ---------------
 
 * [tutsplus](http://tutsplus.com/) 一些设计方面的教程，有收费的也有免费的
-* [unsplash](https://unsplash.com/) 每10天10张免费的高清图片
+* [unsplash](https://unsplash.com/) 每10天10张免费的高清图片，质量非常好
 * [pexels](http://www.pexels.com/) 免费的高清图片
 * [http://wefunction.com/8-unique-places-to-find-quality-free-photos/](http://wefunction.com/8-unique-places-to-find-quality-free-photos/) 介绍获取免费高清图片的文章
+* [gratisography](http://www.gratisography.com/) 免费的图片，质量还行，
+* [picjumbo](http://picjumbo.com/) 免费图片，质量感觉一般，有搜索
+* 
+
+--------
+
+* [themify](http://themify.me/) 主要是一些网页版的theme，以及一点icon
+* [patterntap](http://patterntap.com/) 一些网页设计模板
+
+
+
+
 
 
 
@@ -144,28 +156,29 @@ category: articles
 
 #web
 
-##综合网站
+###综合网站
 
 * [bootcss.com](http://www.bootcss.com/) bootstrap的中文案例
 * [getbootstrap.com](http://getbootstrap.com/) bootstrap 官网，用来快速搭建可接受的web页面
 * [yui](http://yuilibrary.com/) 
 * [YUI CN](http://www.yuicn.org/)
 * [http://www.w3schools.com/](http://www.w3schools.com/) web相关基础知识大全
+* [lesscss](http://lesscss.org/) css预编译语言
 
-## 第三方库
+### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
 * 
 
 #后台
 
-## 服务后台
+### 服务后台
 
 * [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
 * [https://parse.com/](https://parse.com/) 国外的云开发环境，包括push，统计等，与leancloud基本类似
 * [https://pingplusplus.com/](https://pingplusplus.com/) 多方支付接口封装
 
-## 框架
+### 框架
 
 * [playframework](https://www.playframework.com) playframework , scala开发后台
 * [restlet](https://github.com/restlet) MVC java web 框架
@@ -175,11 +188,11 @@ category: articles
 	
 
 
-## 自动部署
+### 自动部署
 
 [capistrano](https://github.com/capistrano/capistrano) 自动化部署不同环境
 
-## 持续集成
+### 持续集成
 
 #协作
 
@@ -195,5 +208,11 @@ category: articles
 * [bitbucket](http://bitbucket.org) 五个人以下的项目不收费
 * [gerrit](https://code.google.com/p/gerrit/) 主要用来代码review了
 * 本地git + 网盘
+
+#理论
+
+* [arxiv](http://arxiv.org/)数学，物理，统计学等的开放paper
+
+
 
 
