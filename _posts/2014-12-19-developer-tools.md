@@ -133,7 +133,8 @@ category: articles
 * [http://wefunction.com/8-unique-places-to-find-quality-free-photos/](http://wefunction.com/8-unique-places-to-find-quality-free-photos/) 介绍获取免费高清图片的文章
 * [gratisography](http://www.gratisography.com/) 免费的图片，质量还行，
 * [picjumbo](http://picjumbo.com/) 免费图片，质量感觉一般，有搜索
-* 
+* [superfamous](http://superfamous.com/) 图片像素很高，但是感觉不够清亮，偏重灰暗色调，比较压抑，山石居多。
+* [imcreator](http://www.imcreator.com/free)分主题，有搜索，风格不明显，资源不错
 
 --------
 
