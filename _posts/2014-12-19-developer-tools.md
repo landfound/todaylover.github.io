@@ -117,12 +117,20 @@ category: articles
 * [uisdc.com](http://hao.uisdc.com/) 设计导航网站，好吧，其他的全在里面
 * [sketch](http://bohemiancoding.com/sketch/) 简单的画矢量图的工具，[教程](https://designcode.io/sketch)
 	* [sketch-measure](https://github.com/utom/sketch-measure) sketch 自动标注插件，使用sketch必须的 
+	* [Sketch-Toolbox](https://github.com/buzzfeed/Sketch-Toolbox) sketch 插件管理
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
 * [http://iosfonts.com/](http://iosfonts.com/) iOS可用字体
 * [http://www.zcool.com.cn/](http://www.zcool.com.cn/) 设计素材库
 * [http://www.sccnn.com/](http://www.sccnn.com/) 素材库
 * [http://www.pinterest.com/](http://www.pinterest.com/) pinterest图片收藏网站，可以搜索出想要的好图片，国内的有[huaban.com](http://huaban.com)
-* [dribbble](https://dribbble.com/) 
+* [dribbble](https://dribbble.com/) 一些设计案例
+
+---------------
+
+* [tutsplus](http://tutsplus.com/) 一些设计方面的教程，有收费的也有免费的
+* [unsplash](https://unsplash.com/) 每10天10张免费的高清图片
+* [pexels](http://www.pexels.com/) 免费的高清图片
+* [http://wefunction.com/8-unique-places-to-find-quality-free-photos/](http://wefunction.com/8-unique-places-to-find-quality-free-photos/) 介绍获取免费高清图片的文章
 
 
 
