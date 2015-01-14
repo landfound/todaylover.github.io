@@ -87,8 +87,10 @@ category: articles
 * [medium.com](https://medium.com/)
 * [joelonsoftware.com](http://www.joelonsoftware.com/) 软件工程实践相关经验
 * [hackernews](https://news.ycombinator.com/) 讨论质量蛮高的一个技术者网站，最新的动态
+* [reddit](http://www.reddit.com/) 各种问答网站
 * [IT橘子](http://itjuzi.com/) 创业者打鸡血的网站，看看都觉得这是你的时代
 * [kickstarter.com](https://www.kickstarter.com/) 众筹项目
+* [producthunt](http://www.producthunt.com/) 关注最新的好的产品
 * [techcrunch.com](http://techcrunch.com/) 科技博客
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 * [http://www.devstore.cn/](http://www.devstore.cn/) 开发者所需要的各种东西的集合，比如推送，短信，人脸识别
@@ -186,6 +188,7 @@ category: articles
 * [spring-framework](https://github.com/spring-projects/spring-framework) java MVC web 框架
 * rails
 	* [rails-composer](https://github.com/RailsApps/rails-composer)  rails 创建引导
+	* [ruby-toolbox](https://www.ruby-toolbox.com/) 介绍ruby 常用的一些框架
 	
 
 
@@ -200,6 +203,9 @@ category: articles
 * [tower](https://tower.im) 轻型项目管理网站，可以简单的多人合作
 * [trello](https://trello.com/) 看板网站，敏捷开发的执行
 * [qq企业邮箱]()  挺好用的，基本功能免费
+* [hipchat](https://www.hipchat.com) stash公司出的企业级聊天工具，集成很多第三方提醒环境的提醒，如Crashlytics崩溃，github pull request等
+
+
 
 #代码托管
 
