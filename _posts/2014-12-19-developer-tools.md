@@ -171,7 +171,7 @@ category: articles
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
-* 
+* [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
 
 #后台
 
