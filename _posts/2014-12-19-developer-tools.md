@@ -74,12 +74,12 @@ category: articles
 
 * [http://code4app.net/](http://code4app.net/) 一些iOS常用模块代码，英文
 * [http://code4app.com/](http://code4app.com/) 同上，是中文的
-* 
 
 ### 高级
 
 * [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
-* 
+* [objccn](http://objccn.io/) obj.io 中文翻译
+* [obj.io](http://obj.io) obj.io 专题iOS内容
 
 
 # 综合网站
@@ -175,6 +175,11 @@ category: articles
 
 #后台
 
+### 云服务
+
+
+
+
 ### 服务后台
 
 * [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
@@ -189,6 +194,7 @@ category: articles
 * rails
 	* [rails-composer](https://github.com/RailsApps/rails-composer)  rails 创建引导
 	* [ruby-toolbox](https://www.ruby-toolbox.com/) 介绍ruby 常用的一些框架
+	* [rails-assets](https://rails-assets.org) 自动将asset资源，javascript，css等转换为gem的源，相比于原始[gem库](https://rubygems.org/search) 的gem，工作方式是直接根据bundle，bower在线生成gem
 	
 
 
