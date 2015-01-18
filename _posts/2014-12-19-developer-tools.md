@@ -120,6 +120,7 @@ category: articles
 * [sketch](http://bohemiancoding.com/sketch/) 简单的画矢量图的工具，[教程](https://designcode.io/sketch)
 	* [sketch-measure](https://github.com/utom/sketch-measure) sketch 自动标注插件，使用sketch必须的 
 	* [Sketch-Toolbox](https://github.com/buzzfeed/Sketch-Toolbox) sketch 插件管理
+	* 可以在github中搜索sketch，有很多不错的工具链
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
 * [http://iosfonts.com/](http://iosfonts.com/) iOS可用字体
 * [http://www.zcool.com.cn/](http://www.zcool.com.cn/) 设计素材库
@@ -167,11 +168,17 @@ category: articles
 * [YUI CN](http://www.yuicn.org/)
 * [http://www.w3schools.com/](http://www.w3schools.com/) web相关基础知识大全
 * [lesscss](http://lesscss.org/) css预编译语言
+* [typekit](https://typekit.com/) adobe在线字体解决方案
 
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
 * [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
+
+### 工具
+
+* [jsnice](http://www.jsnice.org/) js 在线反解压
+
 
 #后台
 
