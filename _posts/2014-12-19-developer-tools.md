@@ -173,6 +173,8 @@ category: articles
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
+* [backbone](https://github.com/jashkenas/backbone) 
+* [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
 * [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
 
 ### 工具
@@ -191,6 +193,7 @@ category: articles
 
 * [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
 * [https://parse.com/](https://parse.com/) 国外的云开发环境，包括push，统计等，与leancloud基本类似
+* [pusher.com](https://pusher.com/) push 
 * [https://pingplusplus.com/](https://pingplusplus.com/) 多方支付接口封装
 
 ### 框架
