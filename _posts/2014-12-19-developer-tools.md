@@ -105,6 +105,7 @@ category: articles
 -----
 
 * [http://xamarin.com/](http://xamarin.com/) C# 跨平台开发，收费
+* [http://kmspico.net/](http://kmspico.net/) windows 破解工具
 
 -----
 
@@ -164,11 +165,12 @@ category: articles
 
 * [bootcss.com](http://www.bootcss.com/) bootstrap的中文案例
 * [getbootstrap.com](http://getbootstrap.com/) bootstrap 官网，用来快速搭建可接受的web页面
-* [yui](http://yuilibrary.com/) 
+* [yui](http://yuilibrary.com/)  已经不更新了
 * [YUI CN](http://www.yuicn.org/)
 * [http://www.w3schools.com/](http://www.w3schools.com/) web相关基础知识大全
 * [lesscss](http://lesscss.org/) css预编译语言
 * [typekit](https://typekit.com/) adobe在线字体解决方案
+* [http://css-tricks.com/](http://css-tricks.com/) css
 
 ### 第三方库
 
@@ -176,6 +178,7 @@ category: articles
 * [backbone](https://github.com/jashkenas/backbone) 
 * [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
 * [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
+* [algolia](https://www.algolia.com) 交互式搜索
 
 ### 工具
 
