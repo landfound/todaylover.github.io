@@ -18,7 +18,7 @@ end
 
 Rack中包含了一些实现了`call`函数的部件，包括URLMap，Builder等，这些部件对rack对象进行组装或者实现特定的功能。
 
-##### URLMap
+#### URLMap
 
   URLMap包含了一个key为URL，value为Rack接口对象的hash，它的初始化方法参数就是该hashmap。其rack接口的实现为
   
@@ -35,7 +35,7 @@ Rack中包含了一些实现了`call`函数的部件，包括URLMap，Builder等
   
 就是在hashmap中根据url，找到合适的响应rack对象，返回该对象的`call`函数返回值。
   	
-##### Builder
+#### Builder
 
 builder 包含了一个URLMap，在该URLmap外，增加了middleware与warmup。middleware与warmup都会接受URLMap或者里层的middleware作为参数，这两个对象在实现的时候可以根据需要决定是否调用里面的Rack对象。builder自身对 `call`函数的实现为
   
@@ -70,7 +70,7 @@ builder 包含了一个URLMap，在该URLmap外，增加了middleware与warmup�
 
 Builder与URLMap所有的Rack对象都可以是任何一种Rack对象。这在builder的map方法中有所体现，map方法引进的是一个执行run 函数的block，该block是在新构造的一个builder的context下执行，run函数会设置该builder的`@run`值，也就是会构造出一个仅含有`@run`的builder，然后将这些builder与已有的`@run`对象组成URLMap。（该block种可能不会调用run函数，这时候`@run`对象指向上面的已有`@run`）
 
-##### CommonLogger
+#### CommonLogger
 
 common logger是一个builder提到的中间件，所以它的`call`函数实现
 
