@@ -12,37 +12,39 @@ def call(env)
 end
 ```
 
-其中`env`，`headers`为hash对象，body为响应each方法的对象。实现该方法的都可作为实现Rack接口web服务器的应用程序。实现Rack接口的对象也称为中间件(middleware)。
+其中`env`，`headers`为hash对象，`body`为响应each方法的对象。实现该方法的都可作为实现Rack接口web服务器的应用程序。实现Rack接口的对象也称为中间件(middleware)。
 
 ## Rack接口一些基本实现
 
-Rack中包含了一些实现了`call`函数的部件，包括URLMap，Builder来对不对的Rack接口实现进行组装
+Rack中包含了一些实现了`call`函数的部件，包括URLMap，Builder等，这些部件对rack对象进行组装或者实现特定的功能。
 
-* URLMap
+##### URLMap
 
-  URLMap包含了一个key为URL，value为Rack接口对象的hash，它的初始化方法参数就是该hashmap
+  URLMap包含了一个key为URL，value为Rack接口对象的hash，它的初始化方法参数就是该hashmap。其rack接口的实现为
   
+ ```
+ def call(env)
+ 	   hashmap.each do |URL, app|
+ 	   		unless match(URL,env); next
+ 	   		// do something with env
+ 	   		return app.call(env)
+ 	   end
+ 	   [// error response array]
+ end
   ```
-  def call(env)
-  	   hashmap.each do |URL, app|
-  	   		unless match(URL,env); next
-  	   		// do something with env
-  	   		return app.call(env)
-  	   end
-  	   [// error response array]
-  end
-  ```
+  
+就是在hashmap中根据url，找到合适的响应rack对象，返回该对象的`call`函数返回值。
   	
-* Builder
+##### Builder
 
-  builder 包含了一个URLMap，在该URLmap外，增加了middleware与warmup。middleware与warmup都会接受URLMap或者里层的middleware作为参数，这两个对象在实现的时候可以根据需要决定是否调用里面的Rack对象。builder自身对 `call`函数的实现为
+builder 包含了一个URLMap，在该URLmap外，增加了middleware与warmup。middleware与warmup都会接受URLMap或者里层的middleware作为参数，这两个对象在实现的时候可以根据需要决定是否调用里面的Rack对象。builder自身对 `call`函数的实现为
   
-  ```
-	  def call(env)
-	  	app = wrap(URLMap,@middleware, @warmup)
-	  	app.call(env)
-	  end
-  ```
+ ```
+  def call(env)
+  	app = wrap(URLMap,@middleware, @warmup)
+  	app.call(env)
+  end
+ ```
   
 相比于URLMap是将Rack对象串起来，Builder更像是一层层包起来。其中run函数如下
 
@@ -62,24 +64,27 @@ Rack中包含了一些实现了`call`函数的部件，包括URLMap，Builder来
     end
 ```
 
-builder所有的Rack对象都可以是任何一种Rack对象，包括自己。这在builder map方法引进block产生URLMap时有体现，map方法引进的是一个执行run 函数的block，改run函数的执行就是构造URLMap时针对每个map的block，构造Builder对象，然后在该对象的context下调用run函数，结果就是新建的builder对象只包含一个由该block种的run函数设置的`@run`对象。（block中可能不执行run函数）。
-
 需要提到的是rackup命令是创建一个builder对象，然后将config.ru的代码在该对象的context下执行，参见[ruby-on-rack-2-the-builder](http://m.onkey.org/ruby-on-rack-2-the-builder)。
 
-* CommonLogger
+--------
 
-	common logger是一个builder提到的中间件，所以它的`call`函数实现
-	
-	```ruby
-		def call(env)
-			code,headers,body = @app.call(env)
-			log code, headers, body
-			[code,header,body]
-		end
-	```
+Builder与URLMap所有的Rack对象都可以是任何一种Rack对象。这在builder的map方法中有所体现，map方法引进的是一个执行run 函数的block，该block是在新构造的一个builder的context下执行，run函数会设置该builder的`@run`值，也就是会构造出一个仅含有`@run`的builder，然后将这些builder与已有的`@run`对象组成URLMap。（该block种可能不会调用run函数，这时候`@run`对象指向上面的已有`@run`）
+
+##### CommonLogger
+
+common logger是一个builder提到的中间件，所以它的`call`函数实现
+
+```ruby
+	def call(env)
+		code,headers,body = @app.call(env)
+		log code, headers, body
+		[code,header,body]
+	end
+```
   
-  commonlogger是很多中间件实现的一个展现。这种中间件的自己产生返回值，只是对输入以及里层的Rack对象（`@app`）的输出做一些事情。
+  commonlogger是很多中间件实现的一个展现。这种中间件自己不产生返回值，只是对输入以及里层的Rack对象（`@app`）的输出做一些事情。
   
+
   
 ## Rack中的handler
 
