@@ -4,7 +4,7 @@ title: Rack源码解析
 category: articles
 ---
 
-[Rack](https://github.com/rack/rack)是ruby的一个web服务统一抽象接口，该接口统一了web服务器与ruby应用程序的接口规范问题。可以对比CGI是语言无关的web服务器与应用程序的接口（输入是环境变量与标准输入，输出是标准输出）来理解Rack。 该接口定义了一个`call`函数
+[Rack](https://github.com/rack/rack)是ruby的一个web服务统一抽象接口，该接口统一了web服务器与ruby应用程序的接口规范问题。可以对比[CGI](http://en.wikipedia.org/wiki/Common_Gateway_Interface)是语言无关的web服务器与应用程序的接口[（输入是环境变量与标准输入，输出是标准输出）](http://blog.csdn.net/laoyang360/article/details/8288619)来理解Rack。 该接口定义了一个`call`函数
 
 ```ruby
 def call(env)
@@ -101,7 +101,7 @@ rack中的handler就是可以调用Rack接口对象的web服务器。Rack(1.6.0)
     autoload :SCGI, "rack/handler/scgi"
     autoload :Thin, "rack/handler/thin"
 ```
-对应于源代码中的handler。上面的CGI，FastCGI，SCGI是CGI接口与Rack的封装，Mongrel，WEBrick是单独的可以运行的web服务器，不过看样子已经不再更新。其他的如[passenger](https://www.phusionpassenger.com/documentation/Design%20and%20Architecture.html)，是现在用的最为广泛的Rack框架服务器，passenger还实现了其他比如负载均衡等，可以参考上面链接。
+对应于源代码中的handler。上面的CGI，[FastCGI](http://www.fastcgi.com/drupal/node/6?q=node/15)，[SCGI](http://en.wikipedia.org/wiki/Simple_Common_Gateway_Interface)是CGI接口与Rack的封装，[Mongrel](https://github.com/evan/mongrel)，WEBrick是单独的可以运行的web服务器，不过看样子[已经不再更新](http://stackoverflow.com/questions/1728978/recommendations-and-differences-between-different-ruby-on-rails-production-web)。其他的如[passenger](https://www.phusionpassenger.com/documentation/Design%20and%20Architecture.html)，是现在用的最为广泛的Rack框架服务器，passenger还实现了其他比如负载均衡等，可以参考上面链接。
 
 来看一个rails -s 启动web服务时所用的自带的`Mongrel`ruby接口源码
 
