@@ -114,6 +114,15 @@ category: articles
 * [http://51shebao.com/](http://51shebao.com/) 代缴社保
 
 
+##### 各大公司的技术网站
+
+* [twitter](https://engineering.twitter.com/) 
+* [facebook](https://code.facebook.com/)
+* [google](http://research.google.com/)
+* 
+
+
+
 
 #设计
 
@@ -183,6 +192,7 @@ category: articles
 ### 工具
 
 * [jsnice](http://www.jsnice.org/) js 在线反解压
+* [jsfiddle](http://jsfiddle.net) 在线实现一些效果
 
 
 #后台
