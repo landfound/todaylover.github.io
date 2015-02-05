@@ -121,7 +121,7 @@ end
 ```
 Rack::Handler::Mongrel.run builder
 ```
-其中builder是最外层的rack接口（由config.ru中生成），一个builder对象。其他几个webserver的rack调用接口基本类似，都是构造env，然后根据响应rack对象的返回，update某些数据。
+其中builder是最外层的rack接口，一个builder对象（由config.ru中生成, rackweb程序的启动过程就是进入ruby环境，找到config.ru文件，生成根rack对象，然后调用call方法）。其他几个webserver的rack调用接口基本类似，都是构造env，然后根据响应rack对象的返回，update某些数据。
 
 
   
