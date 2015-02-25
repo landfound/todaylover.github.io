@@ -74,6 +74,7 @@ category: articles
 
 * [http://code4app.net/](http://code4app.net/) 一些iOS常用模块代码，英文
 * [http://code4app.com/](http://code4app.com/) 同上，是中文的
+* [http://www.mobile-open.com/](http://www.mobile-open.com/)
 
 ### 高级
 
@@ -185,6 +186,7 @@ category: articles
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
+* [vuejs](http://vuejs.org/) js MVC框架
 * [backbone](https://github.com/jashkenas/backbone) 
 * [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
 * [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
