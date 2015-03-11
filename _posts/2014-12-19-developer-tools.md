@@ -85,7 +85,8 @@ category: articles
 
 # 综合网站
 
-* [medium.com](https://medium.com/)
+* [medium.com](https://medium.com/) 设计简洁的博客网站
+* [launchkit](https://launchkit.io/) appstore 提交审核的一些工具。包括应用截图
 * [joelonsoftware.com](http://www.joelonsoftware.com/) 软件工程实践相关经验
 * [hackernews](https://news.ycombinator.com/) 讨论质量蛮高的一个技术者网站，最新的动态
 * [reddit](http://www.reddit.com/) 各种问答网站
