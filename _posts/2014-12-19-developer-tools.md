@@ -237,6 +237,7 @@ category: articles
 * [trello](https://trello.com/) 看板网站，敏捷开发的执行
 * [qq企业邮箱]()  挺好用的，基本功能免费
 * [hipchat](https://www.hipchat.com) stash公司出的企业级聊天工具，集成很多第三方提醒环境的提醒，如Crashlytics崩溃，github pull request等
+* [Cynthia](https://github.com/afrous/Cynthia) 任务追踪网页
 
 
 
