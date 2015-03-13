@@ -245,8 +245,10 @@ category: articles
 * github 付费托管
 * [自己搭建git服务](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-git-server-on-a-vps)，仅仅提供git托管服务，可以配合[reviewboard](https://www.reviewboard.org/)来进行code review
 * [gitlab](https://github.com/gitlabhq/gitlabhq) 搭建自己的github
+* [phabricator](http://phabricator.org) 公司常用web服务开源项目，代码托管，任务跟踪等，据说用的比较多
 * [bitbucket](http://bitbucket.org) 五个人以下的项目不收费
 * [gerrit](https://code.google.com/p/gerrit/) 主要用来代码review了
+* [reviewboard](https://www.reviewboard.org/) review 代码工具，用过一段时间，不是很好用
 * 本地git + 网盘
 
 #理论
