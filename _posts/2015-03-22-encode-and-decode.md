@@ -43,5 +43,5 @@ IDE与输入输出也只是支持某一种编码，也就是说只有某一种�
 2. 现在处理的系统能接受什么编码
 
 
-
+[old link](http://tomorrow-also-bad.blog.163.com/blog/static/203002244201302683435496)
 
