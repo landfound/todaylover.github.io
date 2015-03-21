@@ -34,7 +34,7 @@ end
 # target build过程
 
 1. build所有pod，生成framework，具体构建与target类似
-2. 使用`swift`命令编译所有swift代码，该过程会生成swiftdoc(文档)，swiftmodule（swift 中public接口以及版本、路径信息等，最终的swiftmodule由多个swiftmodule进行merge产生），modulename-Swift.h文件以及多个binary文件
+2. 使用`swift`命令编译所有swift代码，该过程会生成swiftdoc(文档)，swiftmodule（swift 中public接口以及版本、路径信息等，最终的swiftmodule由多个swiftmodule进行merge产生），modulename-Swift.h文件以及多个binary文件。具体可见`swift -h`
 3. `clang`编译objective-c代码,生成binary文件
 4. 将2，3步骤生成的binary文件进行链接
 5. 嵌入pod生成的framework
@@ -52,7 +52,7 @@ end
 * [using oc in swift project][]
 
 [llvm module]:http://clang.llvm.org/docs/Modules.html#id11
-[apple MixandMatch]:https://developer.apple.com/library/prerelease/ios/
+[apple MixandMatch]:https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html
 [pod author guide to frameworks]:http://blog.cocoapods.org/Pod-Authors-Guide-to-CocoaPods-Frameworks/
 [deep module]:http://railsware.com/blog/2014/06/26/creation-of-pure-swift-module/
 [using oc in swift project]:http://badr.co.id/blog/using-objective-c-pods-in-swift-project
