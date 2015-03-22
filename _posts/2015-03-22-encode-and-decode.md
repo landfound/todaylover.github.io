@@ -91,6 +91,7 @@ text = text.decode(content_type['encoding'])
 * [setdefaultencoding](http://www.ianbicking.org/illusive-setdefaultencoding.html)
 * [scrapy](http://scrapy-chs.readthedocs.org/)
 * [xpath](http://www.w3school.com.cn/xpath/xpath_syntax.asp)
+* [unicode](http://en.wikipedia.org/wiki/Unicode)
 
 
 
