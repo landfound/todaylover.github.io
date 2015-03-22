@@ -27,6 +27,12 @@ python内部使用的是unicode编解码规则，但是输入输出可以是GBK�
 
 python内部使用unicode，但是python脚本文件不一定使用，如果在python脚本中不是使用`u'**'`而是用`‘**’`来表示字符串，那么就会出现硬编码，也就是该字符串与该脚本（代码字符串）的编码格式相同。这样会出现一旦对该脚本进行转码，脚本内部依赖于编码的逻辑就会出问题。比如有一个逻辑是将某个字符串按照UTF-8转为unicode，然后在进行处理，该脚本在为UTF-8时没有问题，如果变为GBK问题就来了，就会出现将GBK码的字符串按照UTF-8进行转码的错误。
 
+python将脚本内的字符串（为脚本文件编码）解释为unicode时，默认采用defaultencoding进行解码。例如在utf-8脚本文件`# -*- coding: utf-8 -*-`，直接写`unicode(‘的’)`就会出现解码错误，因为defaultencoding为ASCII码。要对该情况进行修正，有两种方法：
+
+* 调用`unicode`时传入encoding，可以写成 `unicode(‘的’,'UTF-8')`
+* 修改默认的encoding，`reload sys; sys.setdefaultencoding('UTF-8')`
+
+unicode与str都支持encode与decode	, `unicode.encode('UTF-8')`可得到UTF-8编码字符串，而`unicode.decode('GB2312')`则会先对unicode用defaultencoding进行encode，然后再按照GB2312进行decode。`str.decode('UTF-8')`会按照UTF-8编码转为unicode，`str.encode(‘GB2312’)`则先对str按照defaultencoding进行decode, 然后在进行encode。encode与decode不提供参数则都采用defaultencoding。
 
 ### IDE与输入输出
 
@@ -78,4 +84,14 @@ text = text.decode(content_type['encoding'])
 
 
 [old link](http://tomorrow-also-bad.blog.163.com/blog/static/203002244201302683435496)
+
+###ref
+
+* [stackoverflow](http://stackoverflow.com/questions/3828723/why-we-need-sys-setdefaultencodingutf-8-in-a-py-script)
+* [setdefaultencoding](http://www.ianbicking.org/illusive-setdefaultencoding.html)
+* [scrapy](http://scrapy-chs.readthedocs.org/)
+* [xpath](http://www.w3school.com.cn/xpath/xpath_syntax.asp)
+
+
+
 
