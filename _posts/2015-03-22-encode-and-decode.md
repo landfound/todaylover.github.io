@@ -43,5 +43,39 @@ IDE与输入输出也只是支持某一种编码，也就是说只有某一种�
 2. 现在处理的系统能接受什么编码
 
 
+# 示例（scrapy抓取编码错误修正）
+
+比如我们用scrapy抓取http://law.npc.gov.cn/treecode/home.cbs网页内容，由于http://law.npc.gov.cn/treecode/home.cbs为GB2312编码，所以我们在
+
+```python
+	def parse(self, response):
+		sel = Selector(response)
+		anchors = sel.xpath('//a')
+		for anchor in anchors:
+			text = anchor.xpath('text()').extract()[0]
+```
+
+得到的response内容的body应当是GB2312编码，但是scrapy对此进行了错误的解码，而是以CP1252编码进行解码得到unicode, 也就是text为错误解码的unicode字符串，显示就是错误的。修复该问题有多种方法
+
+* 用 `chardet.detect(response.body)`得到`response.body`编码，然后在传给Selector之前用replace方法生成新的response， 即
+
+```python
+content_type = chardet.detect(response.body)
+response = response.replace(encoding = content_type['encoding'])
+```
+
+* 对text进行转换，我们知道text是对GB2312编码字符串进行了错误解码产生的unicode字符串。那么我们先按照错误编码进行encode，然后正确解码既可以
+
+```python
+text = text.encode(reponse.encoding)
+content_type = chardet.detect(text)
+text = text.decode(content_type['encoding'])
+```
+
+上面两种方法上一种在整个Selector处理之前，对打段字符串进行detect，更安全。但是如果我们确认原来编码为GB2312，那么就不用detect，直接写GB2312即可，得到的text就是正确的unicode字符串。
+
+
+
+
 [old link](http://tomorrow-also-bad.blog.163.com/blog/static/203002244201302683435496)
 
