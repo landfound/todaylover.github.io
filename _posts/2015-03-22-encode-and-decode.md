@@ -90,8 +90,11 @@ text = text.decode(content_type['encoding'])
 * [stackoverflow](http://stackoverflow.com/questions/3828723/why-we-need-sys-setdefaultencodingutf-8-in-a-py-script)
 * [setdefaultencoding](http://www.ianbicking.org/illusive-setdefaultencoding.html)
 * [scrapy](http://scrapy-chs.readthedocs.org/)
-* [xpath](http://www.w3school.com.cn/xpath/xpath_syntax.asp)
+* [w3school xpath](http://www.w3school.com.cn/xpath/xpath_syntax.asp)
+* [w3 xpath](http://www.w3.org/TR/xpath)
 * [unicode](http://en.wikipedia.org/wiki/Unicode)
+* [ASCII,GB2312,GBK,GB18030](http://blog.csdn.net/liujinchengjx/article/details/1527909)
+* [知乎](http://www.zhihu.com/question/19677619)
 
 
 
