@@ -6,6 +6,17 @@ category: articles
 
 #iOS
 
+
+### swift
+
+* [Alamofire](https://github.com/Alamofire/Alamofire) AFNetworking swift 版
+* [SwiftTask](https://github.com/ReactKit/SwiftTask) promise swift版，优雅的管理异步事件的依赖关系（不优雅的方式就是各种block嵌套以及函数调用）
+* [ReactKit](https://github.com/ReactKit/ReactKit) ReactiveCocoa 类似的功能，响应式编程， 依赖于Swift task
+* [Async](https://github.com/duemunk/Async) 对于dispatch操作的一些swift 封装
+* [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) 简化swift解析json时面对的各种为nil以及越界判断
+* [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) 字典与swift实体对象的转换，可以在使用时有自动提示，类型检查等好处
+
+
 ### 第三方库
 
 * [Mantle](https://github.com/Mantle/Mantle) model对象基类。基于objective-c runtime 来获取property，进行objective-c对象与其他数据结构的map操作。包括json， coredata等。也实现了NSCoding协议
@@ -31,7 +42,9 @@ category: articles
 * [CocoaAsyncSocket](https://github.com/robbiehanson/CocoaAsyncSocket) CFSocket简化封装，如果想象自定义协议的话，必不可少
 * [GCDWebServer](https://github.com/swisspol/GCDWebServer) 好吧，iOS上可以直接搭建web服务器
 * [BeeFramework](https://github.com/gavinkwoe/BeeFramework) XML 来写界面的一整套框架，整体功能很强大，用到了大量消息转发机制，很依赖约定。比较担心的是快速跟上苹果API 更新步伐问题
-* [WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge) javascript 与objc的桥接，objc注册回调或者直接发送消息
+* [WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge) javascript 与objc的桥接，objc注册回调或者直接发送消息, 实现方法是拦截特定的URL协议，提取js执行后的输出数据。
+* [WebViewProxy](https://github.com/marcuswestin/WebViewProxy) 使用URLProtocol实现的web请求代理 
+* [phonegap](https://github.com/phonegap)  增强webview， 大部分是native的js调用封装， 依赖于URLProtocol对特定path与scheme的请求做拦截来完成特定的功能
 * [VCTransitionsLibrary](https://github.com/ColinEberhardt/VCTransitionsLibrary) 一些navigation 的transition 效果
 * [CocoaSPDY](https://github.com/twitter/CocoaSPDY) spdy 协议iOS实现，替代http协议的东西，但是推广比较慢。比较适合列表式请求
 * [plcrashreporter](https://github.com/plausiblelabs/plcrashreporter) 程序崩溃后，堆栈的walker，有名的崩溃收集程序底层都是用这个。 竟然不支持short version， 自己加呗
@@ -44,6 +57,10 @@ category: articles
 * [GPUImage](https://github.com/BradLarson/GPUImage) 图片处理的必备库，可以添加各种效果
 * [Aspects](https://github.com/steipete/Aspects) objective-c 面向切面编程的库，依赖于objective-c runtime的方法动态替换功能
 * [NYXImagesKit](https://github.com/Nyx0uf/NYXImagesKit) 图片处理的一些库，包括比例压缩，图片格式转换，图片简单滤镜
+* [BOString](https://github.com/kovpas/BOString) NSAttributedString的清晰构建方法，类似于masony，简化一些繁琐的计算以及设置。
+* [ACPDownload](https://github.com/antoniocasero/ACPDownload) 类似于appstore的download的按钮效果
+* [DHSmartScreenshot](https://github.com/davidman/DHSmartScreenshot) 对于tableview， scrollview 进行截屏的工具
+
 
 ### xcode工具
 
@@ -187,6 +204,7 @@ category: articles
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
+* [ReactJS](https://facebook.github.io/react/docs/getting-started.html) 网页份component来渲染，每个component独立的数据展示，操作响应逻辑
 * [vuejs](http://vuejs.org/) js MVC框架
 * [backbone](https://github.com/jashkenas/backbone) 
 * [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
