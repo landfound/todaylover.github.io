@@ -137,7 +137,6 @@ __attribute__((used, section("__DATA,RCTImport"))) \
 3. react-native 整体结构如何
 	
 	1、2中提到的是两个关键性问题，回过头来我们看一下整体结构，大致分为
-	
 	* js executor: js的执行环境，分别为javascriptCore与webview
 	* bridge: oc与js的代码调用接口，1、2中的大部分功能就是bridge的功能。oc可以通过bridge来调用js代码，而js的执行环境也是bridge进行配置的。
 	* modules: 2中解释的js执行环境的配置，在代码层面是通过module来管理，每一module可以用2中提到的宏标记自己，这样bridge就会将该module加载进js的执行环境，然后js就可以调取改module的功能。这里面oc中的各种视图占据了大部分，每个单独的视图功能，如UITextField，就会有对应的module RCTTextFieldManager。除去视图，其他的如App的状态，文件的操作，异常处理等都是单独的module。react-natvie为了更加模块化，还将一些module单独抽取为subproject，如图片处理，定位等。
