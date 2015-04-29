@@ -151,7 +151,10 @@ __attribute__((used, section("__DATA,RCTImport"))) \
 
 * [j2objc][]
 * [react-native][]
+* [BeeFramework][]
+* [C_preprocessor][]
 
+[C_preprocessor]: http://en.wikipedia.org/wiki/C_preprocessor
 [react-native]: https://facebook.github.io/react-native/docs/getting-started.html
 [j2objc]: https://github.com/google/j2objc 
 [wax]: https://github.com/probablycorey/wax
