@@ -27,6 +27,7 @@ react-native是reactJS（reactJS的基本想法是将独立的展示，响应逻
 理解react-native如何工作，最核心的是理解javascript与native怎么进行桥接。从最基本的层面说，两种语言（javascript与objective-c）的交互一定是通过一定格式的数据进行的，比如说objective-c都能处理json数据结构，那起一个objective-c的接受json的web服务，然后根据传进来的json结构，执行预先制定好对应该json结构的objective-c逻辑代码，这里不需要关心调用该接口的语言，可以作为任意一种能输出json结构的语言与objective-c的交互。在iOS中，对于javascript不用这么麻烦，因为iOS内嵌了javascript的执行环境（javascriptcore与webview），我们只需要将js代码输入javascript执行环境，就能得到执行输出（直接为字符串输入输出，具体格式需要自己约定转换）。但是javascript 只能被动的调用，反向直接调用native代码却做不到。上面提到的phonegap，WebViewJavascriptBridge等在反向调用方面做了很多事情。react-native也必须处理反向调用。react-native具体是怎么工作的，我们通过几个问题来回答
 
 1. javascript如何调用objective-c代码
+	
 	react-native中js对oc的相互调用与WebViewJavascriptBridge中非常相似，不同点在于WebViewJavascriptBridge通过webview的回调触发特定js代码的执行，拿到执行结果，react-native则是起了一个runloop，用CADisplayLink循环执行特定的命令得到js的执行结果，也就是oc在轮询js，而WebViewJavascriptBridge则是被动通知（js可以引发webview的回调）。相关的代码为
 	
 	```objc
@@ -162,6 +163,7 @@ __attribute__((used, section("__DATA,RCTImport"))) \
 [react-native]: https://github.com/facebook/react-native
 [Xamarin]: http://www.microsoft.com/taiwan/vstudio//
 [mach-o]: https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/MachORuntime/index.html
+[macho view]: https://github.com/gdbinit/MachOView
 [WebViewJavascriptBridge]: https://github.com/marcuswestin/WebViewJavascriptBridge
 [phonegap]: https://github.com/sintaxi/phonegap
 [silver]: http://elementscompiler.com/elements/silver/
