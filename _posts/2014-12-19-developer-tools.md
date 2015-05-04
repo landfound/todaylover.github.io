@@ -60,7 +60,7 @@ category: articles
 * [BOString](https://github.com/kovpas/BOString) NSAttributedString的清晰构建方法，类似于masony，简化一些繁琐的计算以及设置。
 * [ACPDownload](https://github.com/antoniocasero/ACPDownload) 类似于appstore的download的按钮效果
 * [DHSmartScreenshot](https://github.com/davidman/DHSmartScreenshot) 对于tableview， scrollview 进行截屏的工具
-
+* [DTBonjour](https://github.com/Cocoanetics/DTBonjour) [Bonjour](http://en.wikipedia.org/wiki/Bonjour_(software)) 协议服务器
 
 ### xcode工具
 
@@ -156,6 +156,7 @@ category: articles
 * [http://www.sccnn.com/](http://www.sccnn.com/) 素材库
 * [http://www.pinterest.com/](http://www.pinterest.com/) pinterest图片收藏网站，可以搜索出想要的好图片，国内的有[huaban.com](http://huaban.com)
 * [dribbble](https://dribbble.com/) 一些设计案例
+* [freebiesbug](http://freebiesbug.com/) 免费psd，sketch，html的一些设计
 
 ---------------
 
@@ -233,6 +234,7 @@ category: articles
 
 ### 框架
 
+* [Openfire](https://github.com/igniterealtime/Openfire) XMPP 服务器
 * [playframework](https://www.playframework.com) playframework , scala开发后台
 * [restlet](https://github.com/restlet) MVC java web 框架
 * [spring-framework](https://github.com/spring-projects/spring-framework) java MVC web 框架
@@ -240,7 +242,8 @@ category: articles
 	* [rails-composer](https://github.com/RailsApps/rails-composer)  rails 创建引导
 	* [ruby-toolbox](https://www.ruby-toolbox.com/) 介绍ruby 常用的一些框架
 	* [rails-assets](https://rails-assets.org) 自动将asset资源，javascript，css等转换为gem的源，相比于原始[gem库](https://rubygems.org/search) 的gem，工作方式是直接根据bundle，bower在线生成gem
-	
+* [sinatra](https://github.com/sinatra/sinatra) DSL 来定义url router的ruby服务器，ORM等需要自己实现
+* [grape](https://github.com/intridea/grape) 移动API 服务器器，可以挂接在Rack接口的程序上。
 
 
 ### 自动部署
