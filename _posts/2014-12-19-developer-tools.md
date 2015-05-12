@@ -98,6 +98,14 @@ category: articles
 * [http://www.gnustep.org/](http://www.gnustep.org/) 其他GNU cocoa框架的实现，开源，可以学习学习一些基础实现
 * [objccn](http://objccn.io/) obj.io 中文翻译
 * [obj.io](http://obj.io) obj.io 专题iOS内容
+* [pyobjc](https://bitbucket.org/ronaldoussoren/pyobjc/src/f4334b2f9f2d?at=default) python 与 objective-c的 接口，可以相互调用。[document](http://pythonhosted.org/pyobjc/) 在mac中内嵌了支持。
+* [rubicon-objc](https://github.com/pybee/rubicon-objc) python对oc库的封装，可以在python中调用oc定义的类。
+* [Python-iOS-support](https://github.com/pybee/Python-iOS-support) 内嵌iOS的python 解释器。[python iOS template](https://github.com/pybee/Python-iOS-template)，可以调用python的iOS工程的模板。
+* [pyobjus](https://github.com/kivy/pyobjus) python 对oc的封装，依赖oc的反射。python的ctypes, [cython](https://github.com/cython/cython)模块来调用oc的c接口来实现。
+* [kivy ios](https://github.com/kivy/kivy-ios.git) kivy iOS 工具链，可以用来编写iOS上运行python的程序。
+* [ios-ruby-embedded](https://github.com/carsonmcdonald/ios-ruby-embedded)iOS嵌入ruby代码
+* [rubymotion](http://www.rubymotion.com/) rubymotion，ruby 编写iOS
+* [MacRuby](https://github.com/MacRuby/MacRuby) 已经不更新了
 
 
 # 综合网站
