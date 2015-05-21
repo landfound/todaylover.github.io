@@ -213,7 +213,12 @@ category: articles
 ### 第三方库
 
 * [https://github.com/mcasimir/mobile-angular-ui](https://github.com/mcasimir/mobile-angular-ui) mobile web 开发
+* [jquery-ui](http://jqueryui.com/)依赖于jquery的一些基本UI效果
+* [getuikit](http://getuikit.com/) 很多基本的UI组件，如搜索，视差效果，markdown编辑器等
+* [medium-editor](https://github.com/daviferreira/medium-editor) medium的编辑器，相似的还有[medium.js](https://github.com/jakiestfu/Medium.js/)
 * [ReactJS](https://facebook.github.io/react/docs/getting-started.html) 网页份component来渲染，每个component独立的数据展示，操作响应逻辑
+* [waypoints](https://github.com/imakewebthings/waypoints) 某一点移动到某处可以进行触发
+* [jscroll](http://jscroll.com/) 滑动加载
 * [vuejs](http://vuejs.org/) js MVC框架
 * [backbone](https://github.com/jashkenas/backbone) 
 * [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
@@ -250,6 +255,8 @@ category: articles
 	* [rails-composer](https://github.com/RailsApps/rails-composer)  rails 创建引导
 	* [ruby-toolbox](https://www.ruby-toolbox.com/) 介绍ruby 常用的一些框架
 	* [rails-assets](https://rails-assets.org) 自动将asset资源，javascript，css等转换为gem的源，相比于原始[gem库](https://rubygems.org/search) 的gem，工作方式是直接根据bundle，bower在线生成gem
+	* [acts-as-taggable-on](https://github.com/mbleigh/acts-as-taggable-on) 方便创建tag以及tag相关查询
+	* [react-rails](https://github.com/reactjs/react-rails) react 在rails的集成，有相关的generator
 * [sinatra](https://github.com/sinatra/sinatra) DSL 来定义url router的ruby服务器，ORM等需要自己实现
 * [grape](https://github.com/intridea/grape) 移动API 服务器器，可以挂接在Rack接口的程序上。
 
