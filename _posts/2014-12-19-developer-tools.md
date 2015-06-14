@@ -61,6 +61,8 @@ category: articles
 * [ACPDownload](https://github.com/antoniocasero/ACPDownload) 类似于appstore的download的按钮效果
 * [DHSmartScreenshot](https://github.com/davidman/DHSmartScreenshot) 对于tableview， scrollview 进行截屏的工具
 * [DTBonjour](https://github.com/Cocoanetics/DTBonjour) [Bonjour](http://en.wikipedia.org/wiki/Bonjour_(software)) 协议服务器
+* [LKDBHelper-SQLite-ORM](https://github.com/li6185377/LKDBHelper-SQLite-ORM) 配合FMDB使用的ORM工具。方便数据库操作
+* [MJExtension](https://github.com/CoderMJLee/MJExtension) model对象与json， coredata等的转换框架。类似于mantle，作者说比mantle更快。另外，其提供了一些通过runloop来获取类信息的封装，用起来蛮方便的。
 
 ### xcode工具
 
@@ -122,6 +124,7 @@ category: articles
 * [designcode.io](https://designcode.io/) iOS 开发的完整引导网站
 * [http://www.devstore.cn/](http://www.devstore.cn/) 开发者所需要的各种东西的集合，比如推送，短信，人脸识别
 * [http://mob.com/](http://mob.com/) shareSDK，短信SDK 等
+* [美恰](https://meiqia.com/)客户服务平台，可以搭建集合各平台的用户反馈后台
 
 -----
 
@@ -259,6 +262,7 @@ category: articles
 	* [react-rails](https://github.com/reactjs/react-rails) react 在rails的集成，有相关的generator
 * [sinatra](https://github.com/sinatra/sinatra) DSL 来定义url router的ruby服务器，ORM等需要自己实现
 * [grape](https://github.com/intridea/grape) 移动API 服务器器，可以挂接在Rack接口的程序上。
+* [json-server](https://github.com/typicode/json-server) 用json文件，快速部署一个restful的http服务器
 
 
 ### 自动部署
