@@ -6,6 +6,12 @@ category: articles
 
 #iOS
 
+###security
+
+* [iOS Class Guard](https://github.com/Polidea/ios-class-guard) iOS代码混淆工具
+* [dumpdecrypted](https://github.com/stefanesser/dumpdecrypted) 通过动态注入链接库dump iOS应用程序的binary文件
+* [HEX Friend](https://github.com/ridiculousfish/HexFiend/) 16进制编辑器
+* [macox reverse](https://reverse.put.as/) macox,iOS 逆向以及安全相关的文章
 
 ### swift
 
@@ -15,7 +21,7 @@ category: articles
 * [Async](https://github.com/duemunk/Async) 对于dispatch操作的一些swift 封装
 * [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) 简化swift解析json时面对的各种为nil以及越界判断
 * [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) 字典与swift实体对象的转换，可以在使用时有自动提示，类型检查等好处
-
+* [Quick](https://github.com/Quick/Quick) swift objective-c BDD 测试框架
 
 ### 第三方库
 
@@ -27,6 +33,8 @@ category: articles
 * [FLEX](https://github.com/Flipboard/FLEX) 强大的视图调试工具，可以动态的查看视图层级结构，附带的可以管理一些基础数据，如NSUserDefults里面的数据，是debug诡异视图问题的最佳帮手。
 * [OHHTTPStubs](https://github.com/AliSoftware/OHHTTPStubs) 可以做http请求的mock，在单测，开发前期，以及边界条件的测试方面可以发挥作用
 * [specta](https://github.com/specta/specta) 对苹果原生的XC的封装，使得单测的结构更加清晰，对异步测试的支持更加强大
+* [Kiwi](https://github.com/kiwi-bdd/Kiwi) BDD(behavior driven development) 测试框架
+* [expecta](https://github.com/specta/expecta) 条件判断，满足条件通过。结合测试框架
 * [CocoaSecurity](https://github.com/kelp404/CocoaSecurity) 对苹果一些底层的数据加密等操作的封装，比较方便的工具
 * [TMCache](https://github.com/tumblr/TMCache) 内存，文件缓存，缓存对象生命周期边界管理还行
 * [QBImagePickerController](https://github.com/questbeat/QBImagePickerController) iamgepicker 增强版，collectionview 多选
@@ -43,7 +51,7 @@ category: articles
 * [GCDWebServer](https://github.com/swisspol/GCDWebServer) 好吧，iOS上可以直接搭建web服务器
 * [BeeFramework](https://github.com/gavinkwoe/BeeFramework) XML 来写界面的一整套框架，整体功能很强大，用到了大量消息转发机制，很依赖约定。比较担心的是快速跟上苹果API 更新步伐问题
 * [WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge) javascript 与objc的桥接，objc注册回调或者直接发送消息, 实现方法是拦截特定的URL协议，提取js执行后的输出数据。
-* [WebViewProxy](https://github.com/marcuswestin/WebViewProxy) 使用URLProtocol实现的web请求代理 
+* [WebViewProxy](https://github.com/marcuswestin/WebViewProxy) 使用URLProtocol实现的web请求代理
 * [phonegap](https://github.com/phonegap)  增强webview， 大部分是native的js调用封装， 依赖于URLProtocol对特定path与scheme的请求做拦截来完成特定的功能
 * [VCTransitionsLibrary](https://github.com/ColinEberhardt/VCTransitionsLibrary) 一些navigation 的transition 效果
 * [CocoaSPDY](https://github.com/twitter/CocoaSPDY) spdy 协议iOS实现，替代http协议的东西，但是推广比较慢。比较适合列表式请求
@@ -73,7 +81,7 @@ category: articles
 * [iReSign](https://github.com/maciekish/iReSign) 重新签名的工具
 * [Alcatraz](https://github.com/supermarin/Alcatraz) xcode 插件管理工具，必须安装哈
 * [xctool](https://github.com/facebook/xctool) 替代xcodebuild东西，可配置化，输出友好
-* [class-dump](https://github.com/nygard/class-dump) oc 查看类结构的工具 
+* [class-dump](https://github.com/nygard/class-dump) oc 查看类结构的工具
 * [chisel](https://github.com/facebook/chisel) 视图调试工具，可以debug时隐藏视图，显示视图，增加边框，以及打印出视图结构等
 
 ### 分发平台
@@ -146,10 +154,10 @@ category: articles
 
 ##### 各大公司的技术网站
 
-* [twitter](https://engineering.twitter.com/) 
+* [twitter](https://engineering.twitter.com/)
 * [facebook](https://code.facebook.com/)
 * [google](http://research.google.com/)
-* 
+*
 
 
 
@@ -158,7 +166,7 @@ category: articles
 
 * [uisdc.com](http://hao.uisdc.com/) 设计导航网站，好吧，其他的全在里面
 * [sketch](http://bohemiancoding.com/sketch/) 简单的画矢量图的工具，[教程](https://designcode.io/sketch)
-	* [sketch-measure](https://github.com/utom/sketch-measure) sketch 自动标注插件，使用sketch必须的 
+	* [sketch-measure](https://github.com/utom/sketch-measure) sketch 自动标注插件，使用sketch必须的
 	* [Sketch-Toolbox](https://github.com/buzzfeed/Sketch-Toolbox) sketch 插件管理
 	* 可以在github中搜索sketch，有很多不错的工具链
 * [hackdesign.org](https://hackdesign.org/) 写成程序员看的设计网站
@@ -223,7 +231,7 @@ category: articles
 * [waypoints](https://github.com/imakewebthings/waypoints) 某一点移动到某处可以进行触发
 * [jscroll](http://jscroll.com/) 滑动加载
 * [vuejs](http://vuejs.org/) js MVC框架
-* [backbone](https://github.com/jashkenas/backbone) 
+* [backbone](https://github.com/jashkenas/backbone)
 * [underscore](https://github.com/jashkenas/underscore) 一些工具性质的函数，如合并，遍历，map等
 * [jiathis](http://www.jiathis.com/) 社会化分享的空间，可以快速集成
 * [algolia](https://www.algolia.com) 交互式搜索
@@ -245,7 +253,7 @@ category: articles
 
 * [https://leancloud.cn/](https://leancloud.cn/) 国内的云服务开发环境，提供对象的授权访问，可以看做云文件系统
 * [https://parse.com/](https://parse.com/) 国外的云开发环境，包括push，统计等，与leancloud基本类似
-* [pusher.com](https://pusher.com/) push 
+* [pusher.com](https://pusher.com/) push
 * [https://pingplusplus.com/](https://pingplusplus.com/) 多方支付接口封装
 
 ### 框架
@@ -297,7 +305,3 @@ category: articles
 #理论
 
 * [arxiv](http://arxiv.org/)数学，物理，统计学等的开放paper
-
-
-
-

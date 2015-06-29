@@ -9,3 +9,5 @@ category: articles
 3. `vimdiff file1 file2` diff two file with vimdiff, you can alse use `diff`
 4. `netstat -ntlp` show ports usage
 5. `lsof` list open file,
+6. `chflags` change file flag
+7. `rsync` sync remote file 
