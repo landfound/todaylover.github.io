@@ -68,7 +68,7 @@ __TEXT段下__text区的数据等等。
 
 能够保证app与服务器的数据不被篡改就够了，但是对于那些防范请求不被伪造的程序来说就需要做更多的安全防范。另外如果静态的数据请求防伪造难达到，退一步要求统计意义上的不被伪造的就是选项之一，在这就需要理解一个合理的请求发生的场景，以及这些场景从统计意义上来说有哪些特征，提取这些特征，就能够进一步防范数据不被大规模的伪造。安全的每一步都只是开始，远未结束。
 
-[self signed cert:]:http://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl
+[self signed cert]:http://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl
 [tools]:http://iphonedevwiki.net/index.php/Reverse_Engineering_Tools
 [Cycript]:http://iphonedevwiki.net/index.php/Cycript
 [hopper]:http://www.hopperapp.com/
