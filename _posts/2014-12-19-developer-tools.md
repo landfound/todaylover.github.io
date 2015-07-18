@@ -22,6 +22,8 @@ category: articles
 * [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) 简化swift解析json时面对的各种为nil以及越界判断
 * [ObjectMapper](https://github.com/Hearst-DD/ObjectMapper) 字典与swift实体对象的转换，可以在使用时有自动提示，类型检查等好处
 * [Quick](https://github.com/Quick/Quick) swift objective-c BDD 测试框架
+* [HanekeSwift](https://github.com/Haneke/HanekeSwift) swift 实现的文件缓存，应用swift模板特性进行特定数据类型的解析，如UIImage, JSON等
+* [CFRuntime](https://github.com/nsdictionary/CFRuntime) swift的MJExtension
 
 ### 第三方库
 
@@ -71,6 +73,8 @@ category: articles
 * [DTBonjour](https://github.com/Cocoanetics/DTBonjour) [Bonjour](http://en.wikipedia.org/wiki/Bonjour_(software)) 协议服务器
 * [LKDBHelper-SQLite-ORM](https://github.com/li6185377/LKDBHelper-SQLite-ORM) 配合FMDB使用的ORM工具。方便数据库操作
 * [MJExtension](https://github.com/CoderMJLee/MJExtension) model对象与json， coredata等的转换框架。类似于mantle，作者说比mantle更快。另外，其提供了一些通过runloop来获取类信息的封装，用起来蛮方便的。
+* [RPJSONValidator](https://github.com/reygonzales/RPJSONValidator)对json进行合法化检查，语法比较简单，可以对json的key对应的值进行相应一系列检测，检测的表达式比较集中
+
 
 ### xcode工具
 
