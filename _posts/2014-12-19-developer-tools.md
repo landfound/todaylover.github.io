@@ -74,7 +74,8 @@ category: articles
 * [LKDBHelper-SQLite-ORM](https://github.com/li6185377/LKDBHelper-SQLite-ORM) 配合FMDB使用的ORM工具。方便数据库操作
 * [MJExtension](https://github.com/CoderMJLee/MJExtension) model对象与json， coredata等的转换框架。类似于mantle，作者说比mantle更快。另外，其提供了一些通过runloop来获取类信息的封装，用起来蛮方便的。
 * [RPJSONValidator](https://github.com/reygonzales/RPJSONValidator)对json进行合法化检查，语法比较简单，可以对json的key对应的值进行相应一系列检测，检测的表达式比较集中
-
+* [libffi](https://github.com/atgreen/libffi) 不定参数函数调用封装，可以用来处理任意函数的调用
+* [PLWeakCompatibility](https://github.com/plausiblelabs/PLWeakCompatibility) iOS4 下weak的实现，代码中嵌入weak 需要的runtime实现方法。基本想法还是weak 设置时对象反向应用到weak的变量，然后在对象dealloc时候，将反向引用的变量设置为nil
 
 ### xcode工具
 
